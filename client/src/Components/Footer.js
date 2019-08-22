@@ -1,11 +1,11 @@
 import React from 'react';
- 
+
 
 function Footer(props) {
 
-return (
-    <footer> Daily Dash &copyright; </footer>
-)
+    return (
+        <footer> Daily Dash &copyright; </footer>
+    )
 
 }
 

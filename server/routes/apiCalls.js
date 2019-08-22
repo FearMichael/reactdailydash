@@ -1,6 +1,6 @@
 const axios = require("axios");
 const unirest = require("unirest");
-require("dotenv").config({ path: "../../dailydash/.env" });
+require("dotenv").config({ path: "../.env" });
 
 const apiCall = {
 
@@ -14,7 +14,10 @@ const apiCall = {
                 // will need to format data and have front end render some graphics/icons based on what the weather is
                 axios.get(weatherSearch).then(function (weatherInfo) {
                     resolve(weatherInfo.data);
-                });
+                })
+                    .catch(err => {
+                        if (err) { console.log(err) }
+                    })
             });
         });
     },
@@ -26,7 +29,6 @@ const apiCall = {
         return new Promise(resolve => {
             axios.get(newsSearch).then(function (newsInfo) {
                 resolve(newsInfo.data);
-                // console.log(newsInfo.data);
             })
                 .catch(err => {
                     if (err) { console.log(err) }
@@ -35,15 +37,17 @@ const apiCall = {
     },
 
     stocks: async (search) => {
+        console.log(search);
         return new Promise(resolve => {
-            unirest.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-quotes?region=US&lang=en&symbols=${search}`)
+            unirest.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol=${search}&region=US`)
                 .header("X-RapidAPI-Host", process.env.RAPIDAPI_HOST)
                 .header("X-RapidAPI-Key", process.env.RAPIDAPI_KEY)
                 .end(function (result) {
-                    console.log(result.body.quoteResponse.result);
-                    // console.log(result.data);
-                    resolve(result.body.quoteResponse.result);
-                });
+                    resolve(result.body);
+                })
+            // .catch(err => {
+            //     if (err) { console.log(err) }
+            // })
         });
     },
 
@@ -53,10 +57,11 @@ const apiCall = {
                 .header("x-rapidapi-host", process.env.AUTOCOMPLETE_HOST)
                 .header("x-rapidapi-key", process.env.AUTOCOMPLETE_KEY)
                 .end(function (result) {
-                    // console.log(result.body.quoteResponse.result);
-                    console.log(result.body.ResultSet);
                     resolve(result.body.ResultSet.Result);
-                });
+                })
+            // .catch(err => {
+            //     if (err) { console.log(err) }
+            // })
         })
     }
 };
