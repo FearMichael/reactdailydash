@@ -43,9 +43,6 @@ const Stocks = (props) => {
       notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid search term" } })
     } else {
       props.getInfo(url, { stock: search }).then(stockData => {
-        console.log(stockData.data.defaultKeyStatistics);
-        // console.log(stocks.data.defaultKeyStatistics["52WeekChange"])
-        // Object.keys(stocks.defaultKeyStatistics).forEach(key => console.log(stocks.defaultKeyStatistics[key]));
         updateStocks(stockData.data);
         updateAutoCompleteList(null);
       })
@@ -61,12 +58,7 @@ const Stocks = (props) => {
   }
 
   const autoCompleteClick = (item) => {
-    console.log("auto complete click");
-    console.log(item);
     updateSearch(item);
-    let url = "/api/stocks"
-    // props.getInfo(url, { search: item }).then(stockData => {
-    // })
     fetchData();
   };
 
@@ -93,7 +85,6 @@ const Stocks = (props) => {
             <Typography variant="body2" component="p">Profits: {dataCheck(stocks.defaultKeyStatistics.profitMargins.fmt)}</Typography>
             <Typography variant="body2" component="p">52 Week Change: {dataCheck(stocks.defaultKeyStatistics["52WeekChange"].fmt)} </Typography>
             <Typography variant="body2" component="p">Sector: {dataCheck(stocks.summaryProfile.sector)} </Typography>
-            {/* <Typography variant="body2" component="p">Profits: {dataCheck(stocks.nothingReal)} </Typography> */}
           </Box>
           : null}
       </CardContent>
