@@ -47,7 +47,6 @@ const News = props => {
 
     const handleChange = (event) => {
         updateSearch(event.target.value);
-        console.log(search);
     };
 
     const fetchData = () => {
@@ -64,7 +63,11 @@ const News = props => {
         } else {
             props.getInfo(url, { news: data }).then(newsData => {
                 console.log(newsData.data.articles)
-                updateNews(newsData.data.articles);
+                if (newsData.data.articles.length < 1) {
+                    notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Hmm, looks like we couldn't find any news for that search" } })
+                } else {
+                    updateNews(newsData.data.articles);
+                }
             })
         }
     }
