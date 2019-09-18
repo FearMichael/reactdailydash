@@ -88,22 +88,24 @@ const Stocks = (props) => {
           </Box>
           : null}
       </CardContent>
-      <CardActions>
-        <FormControl >
-          <InputLabel htmlFor="my-input">Check Stocks</InputLabel>
-          <Input id="my-input" aria-describedby="search for Stocks!" onChange={handleChange} />
-          {autoCompleteList ?
-            <Popper anchorEl={anchorEl} open={autoCompleteList ? true : false}>
-              <Paper square>{
-                autoCompleteList.map(elem => {
-                  return <MenuItem key={elem.symbol} onClick={() => autoCompleteClick(elem.symbol)}>{elem.symbol}</MenuItem>
-                })}
-              </Paper>
-            </Popper>
-            : null}
-        </FormControl>
-        <Button size="large" onClick={fetchData}>Get Stocks</Button>
-      </CardActions>
+      <Box display="flex" justifyContent="center" mb={1}>
+        <CardActions>
+          <FormControl >
+            <InputLabel htmlFor="my-input">Check Stocks</InputLabel>
+            <Input id="my-input" aria-describedby="search for Stocks!" onChange={handleChange} />
+            {autoCompleteList &&
+              <Popper anchorEl={anchorEl} open={autoCompleteList ? true : false}>
+                <Paper square>{
+                  autoCompleteList.map(elem => {
+                    return <MenuItem key={elem.symbol} onClick={() => autoCompleteClick(elem.symbol)}>{elem.symbol}</MenuItem>
+                  })}
+                </Paper>
+              </Popper>
+            }
+          </FormControl>
+          <Button size="large" onClick={fetchData}>Get Stocks</Button>
+        </CardActions>
+      </Box>
     </Card>
   )
   return content;

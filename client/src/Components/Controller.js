@@ -29,22 +29,23 @@ const Controller = props => {
     }
 
     let content = (
-        <div>
-            <Grid container spacing={2}>
-                <Grid item sm={12} md={6} lg={6}>
-                    <News getInfo={apiPost} db={db} />
-                </Grid>
-                <Grid item sm={12} md={6} lg={6}>
-                    <Stocks getInfo={apiPost} db={db} />
-                </Grid>
-                <Grid item sm={12} md={6} lg={6}>
-                    <Weather getInfo={apiPost} db={db} />
-                </Grid>
-                <Grid item sm={12} md={6} lg={6}>
-                    <Tasks getInfo={apiPost} db={db} />
-                </Grid>
+        <Grid
+            container
+            spacing={1}
+        >
+            <Grid item sm={12} md={6} lg={6}>
+                <News getInfo={apiPost} db={db} />
             </Grid>
-        </div>
+            <Grid item sm={12} md={6} lg={6}>
+                <Stocks getInfo={apiPost} db={db} />
+            </Grid>
+            <Grid item sm={12} md={6} lg={6}>
+                <Weather getInfo={apiPost} db={db} />
+            </Grid>
+            <Grid item sm={12} md={6} lg={6}>
+                <Tasks getInfo={apiPost} db={db} />
+            </Grid>
+        </Grid>
     )
     return content;
 }

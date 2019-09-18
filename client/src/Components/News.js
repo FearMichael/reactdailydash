@@ -87,7 +87,7 @@ const News = props => {
                     The News
                 </Typography>
                 {/* <Typography variant="body2" component="p"> */}
-                {news ?
+                {news &&
                     news.slice(0, newsToShow).map((newsItem, i) => {
                         return (
                             <div key={i}>
@@ -103,12 +103,12 @@ const News = props => {
                             </div>
                         )
                     })
-                    : null}
-                {news ?
+                }
+                {news &&
                     <Box display="flex" justifyContent="center">
                         <Button size="small" onClick={showMore}>Show More</Button>
                     </Box>
-                    : null}
+                }
 
             </CardContent>
             <Box display="flex" justifyContent="center" mb={1}>

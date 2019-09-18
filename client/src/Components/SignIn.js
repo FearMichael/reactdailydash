@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Modal, Input, FormControl, Grid, Button, Paper, makeStyles, ClickAwayListener } from "@material-ui/core";
+import { Modal, Input, Box, FormControl, Grid, Button, Paper, makeStyles, ClickAwayListener } from "@material-ui/core";
 import FirebaseProvider from "./Context/FirebaseContext";
 
 const useStyles = makeStyles(theme => ({
@@ -82,80 +82,85 @@ const SignIn = (props) => {
     }
 
     let content = (
-        <div>
-            <Modal
-                style={{ top: "10%", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "0" }}
-                aria-labelledby="sign-in-form"
-                aria-describedby="use-this-form-to-sign-in"
-                open={props.formOpen}
-                onClose={props.formHandleClose}
-            >
-                <ClickAwayListener onClickAway={props.closeModal}>
-                    <Paper className={classes.paper} >
-                        {!showForm ?
-                            <>
-                                <Button onClick={() => selectLogin("create")}>Create Account</Button>
-                                <Button onClick={() => selectLogin("signin")}>Sign In</Button>
-                            </>
-                            : null}
+        <Modal
+            style={{ top: "10%", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "0" }}
+            aria-labelledby="sign-in-form"
+            aria-describedby="use-this-form-to-sign-in"
+            open={props.formOpen}
+            onClose={props.formHandleClose}
+        >
+            <ClickAwayListener onClickAway={props.closeModal}>
+                <Paper className={classes.paper} >
+                    {!showForm &&
+                        <>
+                            <Button onClick={() => selectLogin("create")}>Create Account</Button>
+                            <Button onClick={() => selectLogin("signin")}>Sign In</Button>
+                        </>
+                    }
 
-                        {showForm ?
-                            <Grid style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Grid item sm={12}>
-                                    <FormControl>
-                                        <Input
-                                            inputComponent="input"
-                                            label="First Name"
-                                            placeholder="First Name"
-                                            // value={email}
-                                            onChange={firstNameChange}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={12}>
-                                    <FormControl>
-                                        <Input
-                                            inputComponent="input"
-                                            label="Last Name"
-                                            placeholder="Last Name"
-                                            // value={email}
-                                            onChange={lastNameChange}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={12}>
-                                    <FormControl>
-                                        <Input
-                                            inputComponent="input"
-                                            label="Email"
-                                            placeholder="Email"
-                                            value={email}
-                                            onChange={handleEmailChange}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={12}>
-                                    <FormControl>
-
-                                        <Input
-                                            inputComponent="input"
-                                            label="Password"
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={handlePasswordChange}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={12}>
-                                    {loginType === "signin" ? <Button onClick={() => formSignIn(email, password)}>Sign In</Button> : null}
-                                    {loginType === "create" ? <Button onClick={() => formCreateAccount(email, password)}>Create Account</Button> : null}
-                                </Grid>
+                    {showForm &&
+                        <Grid
+                            container
+                            alignItems="center"
+                        >
+                            {loginType === "create" &&
+                                <>
+                                    < Grid item sm={12}>
+                                        <FormControl>
+                                            <Input
+                                                inputComponent="input"
+                                                label="First Name"
+                                                placeholder="First Name"
+                                                // value={email}
+                                                onChange={firstNameChange}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item sm={12}>
+                                        <FormControl>
+                                            <Input
+                                                inputComponent="input"
+                                                label="Last Name"
+                                                placeholder="Last Name"
+                                                // value={email}
+                                                onChange={lastNameChange}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                </>
+                            }
+                            <Grid item sm={12}>
+                                <FormControl>
+                                    <Input
+                                        inputComponent="input"
+                                        label="Email"
+                                        placeholder="Email"
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                    />
+                                </FormControl>
                             </Grid>
-                            : null}
-                    </Paper>
-                </ClickAwayListener>
-            </Modal>
-        </div>
+                            <Grid item sm={12}>
+                                <FormControl>
+
+                                    <Input
+                                        inputComponent="input"
+                                        label="Password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={handlePasswordChange}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item sm={12}>
+                                {loginType === "signin" && <Button onClick={() => formSignIn(email, password)}>Sign In</Button>}
+                                {loginType === "create" && <Button onClick={() => formCreateAccount(email, password)}>Create Account</Button>}
+                            </Grid>
+                        </Grid>
+                    }
+                </Paper>
+            </ClickAwayListener>
+        </Modal >
     )
     return content;
 }

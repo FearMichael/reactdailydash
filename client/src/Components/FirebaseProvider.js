@@ -37,17 +37,22 @@ const FirebaseProvider = (props) => {
 
     const [newsData, updateNewsData] = useState();
 
-    const [user, updateUser] = useState(null)
+    const [user, updateUser] = useState(null);
 
     const addTask = (task) => {
+        console.log(task);
         try {
-            db.collection("users").doc(user.id).update({ tasks: firebase.firestore.FieldValue.arrayUnion(task) }).then(newData => {
+            db.collection("users").doc(user.uid).update({ tasks: firebase.firestore.FieldValue.arrayUnion(task) }).then(newData => {
                 console.log(newData);
-            })
+            });
         }
         catch (error) {
             console.error(`Error at Add Task to Firestore Function: ${error}`);
         }
+    };
+
+    const deleteTask = (task) => {
+        db.collection("users").doc(user.uid).update({ tasks: task }).then(data => console.log(data)).catch(err => console.log(err))
     };
 
     const signIn = (email, password) => {
@@ -71,7 +76,8 @@ const FirebaseProvider = (props) => {
                 // updateUser(user);
                 db.collection("users").doc(user.uid).get().then(userData => {
                     let name = `${userData.data().firstName} ${userData.data().lastName}`;
-                    let userWithName = { ...user, name }
+                    let userInfo = userData.data();
+                    let userWithName = { ...user, name, userInfo }
                     updateUser(userWithName);
                 })
             } else {
@@ -100,7 +106,8 @@ const FirebaseProvider = (props) => {
         createAccount: createAccount,
         user: user,
         signOut: signOut,
-        addUser: addUser
+        addUser: addUser,
+        deleteTask: deleteTask,
     }
 
     return (

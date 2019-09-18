@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-    Card, CardContent, Typography, CardActions, Grid, Grow, Checkbox, List, ListItem, ListItemText,
+    Card, CardContent, Typography, CardActions, Grid, Grow, Checkbox, Box, List, ListItem, ListItemText,
     Button, CardMedia, CardActionArea, FormControl, InputLabel, Input
 } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons"
 import { makeStyles } from "@material-ui/styles"
 import NotificationContext from "./Context/NotificationContext";
+import FirebaseContext from './Context/FirebaseContext';
 
 const coolGreen = "linear-gradient(45deg, #8CD790 30%, #AAFCB8 90%)"
 const useStyles = makeStyles({
@@ -46,13 +47,15 @@ const Tasks = props => {
 
     const classes = useStyles();
 
+    const firebase = useContext(FirebaseContext);
+
     const [showImg, updateShowImg] = useState(true);
 
     const [state, notificationDispatch] = useContext(NotificationContext);
 
     const [taskItem, updateTaskItem] = useState();
 
-    const [tasks, updateTasks] = useState(["Groceries", "Feed Dog", "Feed Cat"]);
+    const [tasks, updateTasks] = useState([]);
 
     const [hoverVis, updateHoverVis] = useState("");
 
@@ -71,7 +74,7 @@ const Tasks = props => {
     };
 
     const deleteItem = (identifier) => {
-        updateTasks(tasks.filter(elem => elem !== identifier))
+        firebase.deleteTask(tasks.filter(elem => elem !== identifier))
         console.log(tasks);
     };
 
@@ -83,7 +86,7 @@ const Tasks = props => {
             updateEditItem(element);
             updateTaskItem(element);
         }
-    }
+    };
 
     const handleCheck = (event, identifier) => {
         let checked = !event.target.checked
@@ -114,15 +117,20 @@ const Tasks = props => {
         updateEditItem("");
     }
 
+    const addTaskItem = () => {
+        let itemArr = [];
+        firebase.addTask(itemArr.push(taskItem))
+    }
+
     const fetchData = () => {
         console.log("Fake Fetch");
-        // let url = "/api/tasks";
+        console.log(firebase.user)            // let url = "/api/tasks";
         // props.getInfo(url).then(tasks => {
         //     updateTasks(tasks);
-        // })
-        if (taskItem) {
-            updateTasks([...tasks, taskItem]);
-        }
+        // });
+        // if (taskItem) {
+        //     updateTasks([...tasks, taskItem]);
+        // };
         updateShowAdd(false);
     };
 
@@ -167,14 +175,28 @@ const Tasks = props => {
                                                         </FormControl>
                                                     </Grid>
                                                     <Grid item sm={12} md={6} lg={6}>
-                                                        <Button disabled={taskItem ? false : true} className={classes.addButton} size="small" onClick={() => saveEdit(elem)} aria-label="submit add task">Save</Button>
+                                                        <Button
+                                                            disabled={taskItem ? false : true}
+                                                            className={classes.addButton}
+                                                            size="small" onClick={() => saveEdit(elem)}
+                                                            aria-label="submit add task">
+                                                            Save</Button>
                                                     </Grid>
                                                 </Grid>
                                             </Grow>
                                         }
                                         <>
-                                            <Button className={classes.editButton} style={hoverVis !== i.toString() ? { visibility: "hidden" } : { visibility: "visible" }} onClick={() => { editItems(elem) }}>Edit</Button>
-                                            <Button className={classes.deleteButton} style={hoverVis !== i.toString() ? { visibility: "hidden" } : { visibility: "visible" }} onClick={() => deleteItem(elem)}>Delete</Button>
+                                            <Button
+                                                className={classes.editButton}
+                                                style={hoverVis !== i.toString() ? { visibility: "hidden" } : { visibility: "visible" }}
+                                                onClick={() => editItems(elem)}>
+                                                Edit</Button>
+
+                                            <Button
+                                                className={classes.deleteButton}
+                                                style={hoverVis !== i.toString() ? { visibility: "hidden" } : { visibility: "visible" }}
+                                                onClick={() => deleteItem(elem)}>
+                                                Delete</Button>
                                         </>
                                     </ListItem>
                                 )
@@ -183,24 +205,35 @@ const Tasks = props => {
                         : null}
                 </Typography>
             </CardContent>
-            <CardActions>
-                {showAdd ?
-                    <Grow in={showAdd} timeout={600}>
-                        <Grid container alignContent="center">
-                            <Grid item sm={12} md={6} lg={6}>
-                                <FormControl>
-                                    <InputLabel htmlFor="my-input">Add Task</InputLabel>
-                                    <Input aria-describedby="add task" onChange={(e) => handleChange("taskItem", e)} />
-                                </FormControl>
+            <Box display="flex" justifyContent="center" mb={1}>
+                <CardActions>
+                    {showAdd ?
+                        <Grow in={showAdd} timeout={600}>
+                            <Grid container alignContent="center">
+                                <Grid item sm={12} md={6} lg={6}>
+                                    <FormControl>
+                                        <InputLabel htmlFor="my-input">Add Task</InputLabel>
+                                        <Input aria-describedby="add task" onChange={(e) => handleChange("taskItem", e)} />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item sm={12} md={6} lg={6}>
+                                    <Button
+                                        disabled={taskItem ? false : true}
+                                        className={classes.addButton}
+                                        size="small" onClick={addTaskItem}
+                                        aria-label="submit add task">
+                                        Add</Button>
+                                </Grid>
                             </Grid>
-                            <Grid item sm={12} md={6} lg={6}>
-                                <Button disabled={taskItem ? false : true} className={classes.addButton} size="small" onClick={fetchData} aria-label="submit add task">Add</Button>
-                            </Grid>
-                        </Grid>
-                    </Grow>
-                    : <AddCircle className={classes.plusIcon} fontSize="large" onClick={() => updateShowAdd(true)} aria-label="open add task form"></AddCircle>
-                }
-            </CardActions>
+                        </Grow>
+                        : <AddCircle className={classes.plusIcon}
+                            fontSize="large"
+                            onClick={() => updateShowAdd(true)}
+                            aria-label="open add task form">
+                        </AddCircle>
+                    }
+                </CardActions>
+            </Box>
         </Card>
     )
     return content;

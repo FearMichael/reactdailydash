@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
-  Card, CardContent, Typography, CardActions, Grid, Zoom,
+  Card, CardContent, Typography, CardActions, Grid, Zoom, Box,
   Button, CardMedia, CardActionArea, FormControl, InputLabel, Input,
   Table, TableBody, TableCell, TableHead, TableRow, makeStyles
 } from "@material-ui/core";
@@ -104,13 +104,15 @@ const Weather = (props) => {
             : null}
         </Grid>
       </CardContent>
-      <CardActions>
-        <FormControl>
-          <InputLabel htmlFor="my-input">Weather by zip code</InputLabel>
-          <Input id="my-input" aria-describedby="search for weather" onChange={handleChange} />
-        </FormControl>
-        <Button size="large" onClick={fetchData}>Get Weather</Button>
-      </CardActions>
+      <Box display="flex" justifyContent="center" mb={1}>
+        <CardActions>
+          <FormControl>
+            <InputLabel htmlFor="my-input">Weather by zip code</InputLabel>
+            <Input id="my-input" aria-describedby="search for weather" onChange={handleChange} />
+          </FormControl>
+          <Button size="large" onClick={fetchData}>Get Weather</Button>
+        </CardActions>
+      </Box>
     </Card>
   )
   return content;
