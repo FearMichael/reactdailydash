@@ -37,39 +37,42 @@ const FirebaseProvider = (props) => {
 
     const [newsData, updateNewsData] = useState();
 
+    const [userData, updateUserData] = useState();
+
     const [user, updateUser] = useState(null);
 
     const addTask = (task) => {
         console.log(task);
-        try {
-            db.collection("users").doc(user.uid).update({ tasks: firebase.firestore.FieldValue.arrayUnion(task) }).then(newData => {
-                console.log(newData);
-            });
-        }
-        catch (error) {
-            console.error(`Error at Add Task to Firestore Function: ${error}`);
-        }
+        return db.collection("users").doc(user.uid).update({ tasks: firebase.firestore.FieldValue.arrayUnion(task) });
     };
 
     const deleteTask = (task) => {
-        db.collection("users").doc(user.uid).update({ tasks: task }).then(data => console.log(data)).catch(err => console.log(err))
+        return db.collection("users").doc(user.uid).update({ tasks: firebase.firestore.FieldValue.arrayRemove(task) });
     };
 
     const signIn = (email, password) => {
-        return firebase.auth().signInWithEmailAndPassword(email, password)
-        // .catch(error => {
-        //     console.log(error.code);
-        //     console.log(error.message);
-        // })
+        return firebase.auth().signInWithEmailAndPassword(email, password);
     };
 
     const createAccount = (email, password) => {
-        return firebase.auth().createUserWithEmailAndPassword(email, password)
-        // .catch(error => {
-        //     console.log(error.code);
-        //     console.log(error.message);
-        // })
+        return firebase.auth().createUserWithEmailAndPassword(email, password);
     };
+
+    const updateSearchData = (key, value) => {
+        switch (key) {
+            case "weather":
+                db.collection("users").doc(user.uid).update({ "weather": value }).then((data) => console.log(data));
+                break;
+            case "news":
+                db.collection("users").doc(user.uid).update({ "news": value }).then((data) => console.log(data));
+                break;
+            case "stocks":
+                db.collection("users").doc(user.uid).update({ "stocks": value }).then((data) => console.log(data));
+                break;
+        }
+    }
+
+
     useEffect(() => {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
@@ -78,8 +81,13 @@ const FirebaseProvider = (props) => {
                     let name = `${userData.data().firstName} ${userData.data().lastName}`;
                     let userInfo = userData.data();
                     let userWithName = { ...user, name, userInfo }
+                    console.log(userWithName);
                     updateUser(userWithName);
-                })
+                });
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    console.log(doc.data());
+                    updateUserData(doc.data());
+                });
             } else {
                 updateUser(null);
             }
@@ -93,10 +101,16 @@ const FirebaseProvider = (props) => {
 
     const signOut = () => {
         console.log("Signed Out")
-        firebase.auth().signOut();
+        updateUser(null);
+        updateUserData(null);
+        firebase.auth().signOut().then(() => {
+            window.location.reload();
+        });
     };
 
     let state = {
+        updateSearchData: updateSearchData,
+        userData: userData,
         tasks: taskData,
         stocks: stockData,
         location: locationData,

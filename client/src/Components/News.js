@@ -13,9 +13,10 @@ import NotificationContext from "./Context/NotificationContext";
 import { UPDATE_NOTIFICATION } from './Reducers/NotificationsReducer';
 import NotificationsReducer from "./Reducers/NotificationsReducer";
 import NewsItem from "./NewsItem";
-import axios from 'axios';
+import FirebaseContext from './Context/FirebaseContext';
 import { makeStyles } from '@material-ui/styles';
-
+import Fullscreen from "@material-ui/icons/Fullscreen";
+import FullscreenExit from "@material-ui/icons/FullscreenExit";
 
 const useStyles = makeStyles({
     dividerStyle: {
@@ -24,12 +25,20 @@ const useStyles = makeStyles({
     },
     buttonStyle: {
         justifyContent: "center"
+    },
+    icon: {
+        margin: "0.5rem 0.5rem 0 0",
+        "&:hover": {
+            cursor: "pointer"
+        }
     }
 });
 
 const News = props => {
 
     const classes = useStyles();
+
+    const firebase = useContext(FirebaseContext);
 
     const [search, updateSearch] = useState("");
 
@@ -51,16 +60,12 @@ const News = props => {
 
     const fetchData = () => {
 
-        // axios.post("/api/news", search).then(newsData => {
-        //     console.log(newsData.data.articles);    
-        // updateNews(newsData.data.articles);
-        // })
-
         let url = "/api/news";
         let data = search;
         if (search === "") {
             notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid search term" } })
         } else {
+            firebase.updateSearchData("news", search);
             props.getInfo(url, { news: data }).then(newsData => {
                 console.log(newsData.data.articles)
                 if (newsData.data.articles.length < 1) {
@@ -68,13 +73,35 @@ const News = props => {
                 } else {
                     updateNews(newsData.data.articles);
                 }
-            })
+            });
         }
-    }
-
+    };
+    useEffect(() => {
+        if (firebase.userData && firebase.userData.news) {
+            console.log(firebase.userData.news);
+            props.getInfo("/api/news", { news: firebase.userData.news }).then(newsData => {
+                console.log(newsData.data.articles)
+                if (newsData.data.articles.length < 1) {
+                    notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Hmm, looks like we couldn't find any news for that search" } })
+                } else {
+                    updateNews(newsData.data.articles);
+                }
+            });
+        }
+    }, [firebase.userData]);
+    console.log(props);
     let content = (
 
         <Card>
+            <Box className={classes.icon} display="flex" flexDirection="row-reverse">
+                {props.sizeChange.fullScreen.includes("news") ?
+                    <FullscreenExit
+                        onClick={() => props.sizeChange.decreaseSize("news")} />
+                    :
+                    <Fullscreen
+                        onClick={() => props.sizeChange.increaseSize("news")} />
+                }
+            </Box>
             <CardContent>
                 <CardActionArea>
                     <CardMedia

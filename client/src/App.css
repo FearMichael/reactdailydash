@@ -31,3 +31,12 @@
     transform: rotate(360deg);
   }
 }
+
+.loadingIcon {
+  animation: App-logo-spin infinite 2s linear;
+  font-size: 4rem;
+}
+
+.MuiCardMedia-root {
+  max-height: 20rem;
+}

@@ -7,6 +7,8 @@ import { AddCircle } from "@material-ui/icons"
 import { makeStyles } from "@material-ui/styles"
 import NotificationContext from "./Context/NotificationContext";
 import FirebaseContext from './Context/FirebaseContext';
+import Fullscreen from "@material-ui/icons/Fullscreen";
+import FullscreenExit from "@material-ui/icons/FullscreenExit";
 
 const coolGreen = "linear-gradient(45deg, #8CD790 30%, #AAFCB8 90%)"
 const useStyles = makeStyles({
@@ -73,8 +75,8 @@ const Tasks = props => {
         updateHoverVis("")
     };
 
-    const deleteItem = (identifier) => {
-        firebase.deleteTask(tasks.filter(elem => elem !== identifier))
+    const deleteItem = (item) => {
+        firebase.deleteTask(item).then(() => console.log("Deleted"));
         console.log(tasks);
     };
 
@@ -119,7 +121,7 @@ const Tasks = props => {
 
     const addTaskItem = () => {
         let itemArr = [];
-        firebase.addTask(itemArr.push(taskItem))
+        firebase.addTask(taskItem).then(newTasks => console.log(newTasks));
     }
 
     const fetchData = () => {
@@ -132,17 +134,30 @@ const Tasks = props => {
         //     updateTasks([...tasks, taskItem]);
         // };
         updateShowAdd(false);
+
+        // firebase.user && firebase.
     };
 
 
     useEffect(() => {
         fetchData();
         console.log(tasks);
-        console.log(taskItem)
+        console.log(taskItem);
+
+        console.log(firebase.user);
     }, [])
 
     let content = (
         <Card>
+            <Box className={classes.icon} display="flex" flexDirection="row-reverse">
+                {props.sizeChange.fullScreen.includes("tasks") ?
+                    <FullscreenExit
+                        onClick={() => props.sizeChange.decreaseSize("tasks")} />
+                    :
+                    <Fullscreen
+                        onClick={() => props.sizeChange.increaseSize("tasks")} />
+                }
+            </Box>
             <CardContent>
                 <CardActionArea>
                     <CardMedia
@@ -155,9 +170,9 @@ const Tasks = props => {
                     Your Tasks:
                         </Typography>
                 <Typography variant="body2" component="div">
-                    {tasks.length > 0 ?
+                    {firebase.userData &&
                         <List> {
-                            tasks.map((elem, i) => {
+                            firebase.userData.tasks.map((elem, i) => {
                                 return (
                                     <ListItem key={i} className={classes.listItem} onMouseEnter={() => mouseIn(i)} onMouseLeave={() => mouseOut(i)} >
                                         {editItem !== elem ?
@@ -202,7 +217,7 @@ const Tasks = props => {
                                 )
                             })}
                         </List>
-                        : null}
+                    }
                 </Typography>
             </CardContent>
             <Box display="flex" justifyContent="center" mb={1}>

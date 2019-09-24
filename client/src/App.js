@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Nav from './Components/Nav';
-// import News from './Components/News'
+import Footer from "./Components/Footer";
 import Controller from './Components/Controller';
 import NotificationSnackbar from "./Components/NotificationSnackbar";
 import NotificationProvider from "./Components/NotificationProvider"
@@ -21,6 +21,7 @@ function App() {
           <NotificationSnackbar />
         </Box>
       </FirebaseProvider>
+      <Footer />
     </NotificationProvider>
   );
 }

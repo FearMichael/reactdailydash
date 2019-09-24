@@ -8,8 +8,9 @@ import {
 import NotificationContext from "./Context/NotificationContext";
 import { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer";
 import moment from "moment";
-
-import axios from "axios";
+import FirebaseContext from "./Context/FirebaseContext";
+import Fullscreen from "@material-ui/icons/Fullscreen";
+import FullscreenExit from "@material-ui/icons/FullscreenExit";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,33 +19,33 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: "100%",
   },
+  icon: {
+    margin: "0.5rem 0.5rem 0 0",
+    "&:hover": {
+      cursor: "pointer"
+    }
+  }
 }));
 
 
 
 const Weather = (props) => {
 
+  const firebase = useContext(FirebaseContext);
+
   const classes = useStyles();
-  //variables
+
   const [search, updateSearch] = useState("");
 
   const [weather, updateWeather] = useState()
 
   const handleChange = (event) => {
     updateSearch(event.currentTarget.value)
-    console.log(search)
   }
 
   const [state, notificationDispatch] = useContext(NotificationContext);
 
-  // console.log(notificationDispatch);
-  //functions
   const fetchData = () => {
-    // axios.get("http://dataservice.accuweather.com/forecasts/v1/daily/5day/339474?apikey=yD2AOALJjsPFwnMjt2FozOWwzEp0jG72")
-    //   .then(weatherData => {
-    //     updateWeather(weatherData.data);
-    //     console.log(weatherData.data)
-    //   });
     let url = "/api/weather";
     if (search === "") {
       notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid zip code" } })
@@ -52,6 +53,7 @@ const Weather = (props) => {
       notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a 5 digit zip code" } })
     }
     else {
+      firebase.user && firebase.updateSearchData("weather", search);
       props.getInfo(url, { zip: search }).then(weather => {
         console.log(weather);
         updateWeather(weather.data);
@@ -62,6 +64,15 @@ const Weather = (props) => {
   //component layout
   let content = (
     <Card>
+      <Box className={classes.icon} display="flex" flexDirection="row-reverse">
+        {props.sizeChange.fullScreen.includes("weather") ?
+          <FullscreenExit
+            onClick={() => props.sizeChange.decreaseSize("weather")} />
+          :
+          <Fullscreen
+            onClick={() => props.sizeChange.increaseSize("weather")} />
+        }
+      </Box>
       <CardContent>
         <CardActionArea>
           <CardMedia
