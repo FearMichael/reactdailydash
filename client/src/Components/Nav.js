@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
   },
+  appBar: {
+    backgroundColor: "#455766"
+  }
 }));
 
 const Nav = (props) => {
@@ -51,7 +54,7 @@ const Nav = (props) => {
 
   let content = (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="Menu">
             {/* <MenuIcon /> */}
