@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { Modal, Input, Box, FormControl, Grid, Button, Paper, makeStyles, ClickAwayListener } from "@material-ui/core";
 import Autorenew from "@material-ui/icons/Autorenew"
 import FirebaseProvider from "./Context/FirebaseContext";
+import FormUtil from "./FormUtil";
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -86,6 +87,13 @@ const SignIn = (props) => {
         updateFirstName("");
         updateLastName("");
     }
+    const determineLogin = () => {
+        if (loginType === "signin") {
+            return formSignIn(email, password);
+        } else if (loginType === "create") {
+            return formCreateAccount(email, password);
+        }
+    }
 
     const handleEmailChange = (event) => {
         console.log(event);
@@ -126,66 +134,68 @@ const SignIn = (props) => {
                             className={classes.formContent}
 
                         >
-                            {loginType === "create" &&
-                                <>
-                                    < Grid item sm={12}
-                                    >
-                                        <FormControl>
-                                            <Input
-                                                inputComponent="input"
-                                                label="First Name"
-                                                placeholder="First Name"
-                                                // value={email}
-                                                onChange={firstNameChange}
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item sm={12}>
-                                        <FormControl>
-                                            <Input
-                                                inputComponent="input"
-                                                label="Last Name"
-                                                placeholder="Last Name"
-                                                // value={email}
-                                                onChange={lastNameChange}
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                </>
-                            }
-                            <Grid item sm={12}>
-                                <FormControl>
-                                    <Input
-                                        inputComponent="input"
-                                        label="Email"
-                                        placeholder="Email"
-                                        value={email}
-                                        onChange={handleEmailChange}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item sm={12}>
-                                <FormControl>
-
-                                    <Input
-                                        inputComponent="input"
-                                        label="Password"
-                                        placeholder="Password"
-                                        type="password"
-                                        value={password}
-                                        onChange={handlePasswordChange}
-                                    />
-                                </FormControl>
-                                {loggingIn &&
-                                    <Grid item sm={12}>
-                                        <Autorenew className="loadingIcon" />
-                                    </Grid>
+                            <FormUtil submit={determineLogin}>
+                                {loginType === "create" &&
+                                    <>
+                                        < Grid item sm={12}
+                                        >
+                                            <FormControl>
+                                                <Input
+                                                    inputComponent="input"
+                                                    label="First Name"
+                                                    placeholder="First Name"
+                                                    // value={email}
+                                                    onChange={firstNameChange}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item sm={12}>
+                                            <FormControl>
+                                                <Input
+                                                    inputComponent="input"
+                                                    label="Last Name"
+                                                    placeholder="Last Name"
+                                                    // value={email}
+                                                    onChange={lastNameChange}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                    </>
                                 }
-                            </Grid>
-                            <Grid item sm={12}>
-                                {loginType === "signin" && <Button onClick={() => formSignIn(email, password)}>Sign In</Button>}
-                                {loginType === "create" && <Button onClick={() => formCreateAccount(email, password)}>Create Account</Button>}
-                            </Grid>
+                                <Grid item sm={12}>
+                                    <FormControl>
+                                        <Input
+                                            inputComponent="input"
+                                            label="Email"
+                                            placeholder="Email"
+                                            value={email}
+                                            onChange={handleEmailChange}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item sm={12}>
+                                    <FormControl>
+
+                                        <Input
+                                            inputComponent="input"
+                                            label="Password"
+                                            placeholder="Password"
+                                            type="password"
+                                            value={password}
+                                            onChange={handlePasswordChange}
+                                        />
+                                    </FormControl>
+                                    {loggingIn &&
+                                        <Grid item sm={12}>
+                                            <Autorenew className="loadingIcon" />
+                                        </Grid>
+                                    }
+                                </Grid>
+                                <Grid item sm={12}>
+                                    {loginType === "signin" && <Button onClick={() => formSignIn(email, password)}>Sign In</Button>}
+                                    {loginType === "create" && <Button onClick={() => formCreateAccount(email, password)}>Create Account</Button>}
+                                </Grid>
+                            </FormUtil>
                         </Grid>
                     }
                 </Paper>

@@ -22,6 +22,7 @@ var PORT = process.env.PORT || 8080;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static("public"));
+
 // app.use(cookieParser());
 // app.use(cookieSession({name: "session", keys: ["key1"]}));
 
@@ -172,8 +173,8 @@ app.use(express.static("public"));
 // app.set("view engine", "handlebars");
 
 // Routes
-app.use("/", htmlRoutes);
 app.use("/api", apiRoutes);
+app.use("/", htmlRoutes);
 
 // db.sequelize.sync().then(() => {
 app.listen(PORT, function () {

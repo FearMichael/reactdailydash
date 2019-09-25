@@ -65,7 +65,7 @@ const News = props => {
         if (search === "") {
             notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid search term" } })
         } else {
-            firebase.updateSearchData("news", search);
+            firebase.user && firebase.updateSearchData("news", search);
             props.getInfo(url, { news: data }).then(newsData => {
                 console.log(newsData.data.articles)
                 if (newsData.data.articles.length < 1) {
@@ -110,7 +110,7 @@ const News = props => {
                         title="news"
                     />
                 </CardActionArea>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h5" component="h2" className="cardHeader">
                     The News
                 </Typography>
                 {/* <Typography variant="body2" component="p"> */}

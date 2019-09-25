@@ -1,13 +1,29 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   Card, CardContent, Typography, CardActions, Paper, MenuItem, Popper, Box,
-  Button, CardMedia, CardActionArea, FormControl, InputLabel, Input
+  Button, CardMedia, CardActionArea, FormControl, InputLabel, Input, makeStyles
 } from "@material-ui/core";
 
-import NotificationContext from "./Context/NotificationContext"
-import { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer"
+import NotificationContext from "./Context/NotificationContext";
+import { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer";
+import Fullscreen from "@material-ui/icons/Fullscreen";
+import FullscreenExit from "@material-ui/icons/FullscreenExit";
+import FirebaseContext from "./Context/FirebaseContext";
+
+const useStyles = makeStyles(theme => ({
+  icon: {
+    margin: "0.5rem 0.5rem 0 0",
+    "&:hover": {
+      cursor: "pointer"
+    }
+  }
+}));
 
 const Stocks = (props) => {
+
+  const firebase = useContext(FirebaseContext);
+
+  const classes = useStyles();
 
   const [anchorEl, updateAnchorEl] = useState(null);
 
@@ -29,7 +45,7 @@ const Stocks = (props) => {
     updateAutoComplete(event.currentTarget.value);
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => fetchAutoComplete(event), 200);
-    console.log(search)
+    console.log(anchorEl)
   }
 
   const [state, notificationDispatch] = useContext(NotificationContext);
@@ -42,6 +58,7 @@ const Stocks = (props) => {
     if (search === "" || undefined) {
       notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid search term" } })
     } else {
+      firebase.updateSearchData("stocks", search);
       props.getInfo(url, { stock: search }).then(stockData => {
         updateStocks(stockData.data);
         updateAutoCompleteList(null);
@@ -66,9 +83,28 @@ const Stocks = (props) => {
     return data ? data : "Not Available";
   };
 
+  useEffect(() => {
+    if (firebase.userData) {
+      let url = "/api/stockautocomplete"
+      props.getInfo(url, { search: firebase.userData.stocks }).then(listData => {
+        updateAutoCompleteList(listData.data);
+        console.log(listData.data);
+      })
+    }
+  }, [firebase.userData]);
+
   //component layout
   let content = (
     <Card>
+      <Box className={classes.icon} display="flex" flexDirection="row-reverse">
+        {props.sizeChange.fullScreen.includes("stocks") ?
+          <FullscreenExit
+            onClick={() => props.sizeChange.decreaseSize("stocks")} />
+          :
+          <Fullscreen
+            onClick={() => props.sizeChange.increaseSize("stocks")} />
+        }
+      </Box>
       <CardContent>
         <CardActionArea>
           <CardMedia
@@ -77,7 +113,7 @@ const Stocks = (props) => {
             title="stocks"
           />
         </CardActionArea>
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2" className="cardHeader">
           The Stocks
         </Typography>
         {stocks ?
@@ -92,7 +128,7 @@ const Stocks = (props) => {
         <CardActions>
           <FormControl >
             <InputLabel htmlFor="my-input">Check Stocks</InputLabel>
-            <Input id="my-input" aria-describedby="search for Stocks!" onChange={handleChange} />
+            <Input id="my-input" aria-describedby="search for Stocks!" value={search} onChange={handleChange} />
             {autoCompleteList &&
               <Popper anchorEl={anchorEl} open={autoCompleteList ? true : false}>
                 <Paper square>{

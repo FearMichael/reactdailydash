@@ -41,6 +41,12 @@ const useStyles = makeStyles({
     },
     invisible: {
         visibility: "hidden"
+    },
+    icon: {
+        margin: "0.5rem 0.5rem 0 0",
+        "&:hover": {
+            cursor: "pointer"
+        }
     }
 });
 
@@ -166,7 +172,7 @@ const Tasks = props => {
                         title="news"
                     />
                 </CardActionArea>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h5" component="h2" className="cardHeader">
                     Your Tasks:
                         </Typography>
                 <Typography variant="body2" component="div">

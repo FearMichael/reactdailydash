@@ -81,7 +81,7 @@ const Weather = (props) => {
             title="weather"
           />
         </CardActionArea>
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2" className="cardHeader">
           The Weather
         </Typography>
         <Grid container alignItems="center">

@@ -40,3 +40,8 @@
 .MuiCardMedia-root {
   max-height: 20rem;
 }
+
+.MuiTypography-h5.cardHeader {
+  text-align: center;
+  margin: 1rem 0;
+}

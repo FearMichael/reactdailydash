@@ -1,11 +1,12 @@
 require("dotenv").config({ path: "../env" });
 // const db = require("../models");
 const routes = require("express").Router();
-const passport = require("passport");
+// const passport = require("passport");
 const apiCalls = require("./apiCalls");
 // const axios = require("axios");
 
 //Routes object
+
 
 //add notes to database
 routes.post("/addtasks", function (req, res) {
@@ -14,12 +15,12 @@ routes.post("/addtasks", function (req, res) {
         completed: false,
         UserId: req.body.user
     }, {
-            include: db.User
-        }).then(function () {
-            db.Task.findAll({ where: { UserId: req.body.user }, raw: true }).then(function (allTasks) {
-                res.json(allTasks);
-            });
+        include: db.User
+    }).then(function () {
+        db.Task.findAll({ where: { UserId: req.body.user }, raw: true }).then(function (allTasks) {
+            res.json(allTasks);
         });
+    });
 });
 
 //Get Tasks
@@ -37,7 +38,7 @@ routes.post("/deletetask", function (req, res) {
 });
 
 //NEWS API
-
+//Route = /api/news
 routes.post("/news",
     // passport.authenticate("google", { scope: ["https://www.googleapis.com/auth/plus.login"] }),
     async function (req, res) {
