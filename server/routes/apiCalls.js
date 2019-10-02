@@ -5,7 +5,7 @@ require("dotenv").config({ path: "../.env" });
 const apiCall = {
 
     weather: (zipCode) => {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             let locationSearch = `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${process.env.WEATHER}&q=${zipCode}`;
             let locationID;
             axios.get(locationSearch).then(function (response) {
@@ -16,7 +16,7 @@ const apiCall = {
                     resolve(weatherInfo.data);
                 })
                     .catch(err => {
-                        if (err) { console.log(err) }
+                        if (err) { reject(err) }
                     })
             });
         });
@@ -51,7 +51,7 @@ const apiCall = {
         });
     },
 
-    stockAutoComplete: async (search) => {
+    stockAutoComplete: (search) => {
         return new Promise(resolve => {
             unirest.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/auto-complete?lang=en&region=US&query=${search}`)
                 .header("x-rapidapi-host", process.env.AUTOCOMPLETE_HOST)
@@ -59,9 +59,9 @@ const apiCall = {
                 .end(function (result) {
                     resolve(result.body.ResultSet.Result);
                 })
-            // .catch(err => {
-            //     if (err) { console.log(err) }
-            // })
+                .catch(err => {
+                    if (err) { console.log(err) }
+                })
         })
     }
 };

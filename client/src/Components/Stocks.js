@@ -58,7 +58,7 @@ const Stocks = (props) => {
     if (search === "" || undefined) {
       notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid search term" } })
     } else {
-      firebase.updateSearchData("stocks", search);
+      firebase.userData && firebase.updateSearchData("stocks", search);
       props.getInfo(url, { stock: search }).then(stockData => {
         updateStocks(stockData.data);
         updateAutoCompleteList(null);
@@ -85,10 +85,9 @@ const Stocks = (props) => {
 
   useEffect(() => {
     if (firebase.userData) {
-      let url = "/api/stockautocomplete"
-      props.getInfo(url, { search: firebase.userData.stocks }).then(listData => {
-        updateAutoCompleteList(listData.data);
-        console.log(listData.data);
+      let url = "/api/stocks"
+      props.getInfo(url, { stock: firebase.userData.stocks }).then(listData => {
+        updateStocks(listData.data);
       })
     }
   }, [firebase.userData]);
@@ -116,19 +115,19 @@ const Stocks = (props) => {
         <Typography variant="h5" component="h2" className="cardHeader">
           The Stocks
         </Typography>
-        {stocks ?
+        {stocks &&
           <Box>
             <Typography variant="body2" component="p">Profits: {dataCheck(stocks.defaultKeyStatistics.profitMargins.fmt)}</Typography>
             <Typography variant="body2" component="p">52 Week Change: {dataCheck(stocks.defaultKeyStatistics["52WeekChange"].fmt)} </Typography>
             <Typography variant="body2" component="p">Sector: {dataCheck(stocks.summaryProfile.sector)} </Typography>
           </Box>
-          : null}
+        }
       </CardContent>
       <Box display="flex" justifyContent="center" mb={1}>
         <CardActions>
           <FormControl >
             <InputLabel htmlFor="my-input">Check Stocks</InputLabel>
-            <Input id="my-input" aria-describedby="search for Stocks!" value={search} onChange={handleChange} />
+            <Input aria-describedby="search for Stocks!" value={search} onChange={handleChange} />
             {autoCompleteList &&
               <Popper anchorEl={anchorEl} open={autoCompleteList ? true : false}>
                 <Paper square>{

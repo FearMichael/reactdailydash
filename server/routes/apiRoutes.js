@@ -65,8 +65,9 @@ routes.post("/stocks", async function (req, res) {
 
 routes.post("/stockautocomplete", async function (req, res) {
     console.log(req.body);
-    const autoComplete = await apiCalls.stockAutoComplete(req.body.search);
-    res.json(autoComplete);
+    // const autoComplete = await apiCalls.stockAutoComplete(req.body.search);
+    apiCalls.stockAutoComplete(req.body.search).then(data => res.json(data)).catch(err => { throw err });
+    // res.json(autoComplete);
 })
 
 //Authentication

@@ -141,7 +141,7 @@ const News = props => {
             <Box display="flex" justifyContent="center" mb={1}>
                 <FormControl>
                     <InputLabel htmlFor="my-input">News Search</InputLabel>
-                    <Input id="my-input" aria-describedby="my-helper-text" onChange={handleChange} />
+                    <Input aria-describedby="my-helper-text" onChange={handleChange} />
                 </FormControl>
                 <Button size="large" onClick={fetchData}>Get News</Button>
             </Box>

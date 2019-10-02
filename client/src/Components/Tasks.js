@@ -126,22 +126,13 @@ const Tasks = props => {
     }
 
     const addTaskItem = () => {
-        let itemArr = [];
         firebase.addTask(taskItem).then(newTasks => console.log(newTasks));
     }
 
     const fetchData = () => {
         console.log("Fake Fetch");
-        console.log(firebase.user)            // let url = "/api/tasks";
-        // props.getInfo(url).then(tasks => {
-        //     updateTasks(tasks);
-        // });
-        // if (taskItem) {
-        //     updateTasks([...tasks, taskItem]);
-        // };
+        console.log(firebase.user)
         updateShowAdd(false);
-
-        // firebase.user && firebase.
     };
 
 
@@ -227,33 +218,38 @@ const Tasks = props => {
                 </Typography>
             </CardContent>
             <Box display="flex" justifyContent="center" mb={1}>
-                <CardActions>
-                    {showAdd ?
-                        <Grow in={showAdd} timeout={600}>
-                            <Grid container alignContent="center">
-                                <Grid item sm={12} md={6} lg={6}>
-                                    <FormControl>
-                                        <InputLabel htmlFor="my-input">Add Task</InputLabel>
-                                        <Input aria-describedby="add task" onChange={(e) => handleChange("taskItem", e)} />
-                                    </FormControl>
+                {firebase.userData ?
+                    <CardActions>
+                        {showAdd ?
+                            <Grow in={showAdd} timeout={600}>
+                                <Grid container alignContent="center">
+                                    <Grid item sm={12} md={6} lg={6}>
+                                        <FormControl>
+                                            <InputLabel htmlFor="my-input">Add Task</InputLabel>
+                                            <Input aria-describedby="add task" onChange={(e) => handleChange("taskItem", e)} />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item sm={12} md={6} lg={6}>
+                                        <Button
+                                            disabled={taskItem ? false : true}
+                                            className={classes.addButton}
+                                            size="small" onClick={addTaskItem}
+                                            aria-label="submit add task">
+                                            Add</Button>
+                                    </Grid>
                                 </Grid>
-                                <Grid item sm={12} md={6} lg={6}>
-                                    <Button
-                                        disabled={taskItem ? false : true}
-                                        className={classes.addButton}
-                                        size="small" onClick={addTaskItem}
-                                        aria-label="submit add task">
-                                        Add</Button>
-                                </Grid>
-                            </Grid>
-                        </Grow>
-                        : <AddCircle className={classes.plusIcon}
-                            fontSize="large"
-                            onClick={() => updateShowAdd(true)}
-                            aria-label="open add task form">
-                        </AddCircle>
-                    }
-                </CardActions>
+                            </Grow>
+                            : <AddCircle
+                                className={classes.plusIcon}
+                                fontSize="large"
+                                onClick={() => updateShowAdd(true)}
+                                aria-label="open add task form">
+                            </AddCircle>
+                        }
+                    </CardActions>
+                    :
+                    <Typography variant="body2">Create Account or Login to save tasks</Typography>
+                }
             </Box>
         </Card>
     )
