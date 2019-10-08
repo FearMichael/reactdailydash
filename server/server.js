@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, "client/build")));
 
 // Routes
 app.use("/api", apiRoutes);
-app.use("/", htmlRoutes);
+// app.use("/", htmlRoutes);
 
 app.listen(PORT, function () {
     console.log("Server listening on " + PORT);
