@@ -40,12 +40,12 @@ const apiCall = {
     news: async (topic) => {
         console.log(topic);
         let newsSearch = `https://newsapi.org/v2/everything?q=${topic}&apiKey=${process.env.NEWS}`
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             axios.get(newsSearch).then(function (newsInfo) {
                 resolve(newsInfo.data);
             })
                 .catch(err => {
-                    if (err) { console.log(err) }
+                    if (err) { reject(err) }
                 })
         });
     },
