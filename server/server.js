@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const htmlRoutes = require("./routes/htmlRoutes");
+// const htmlRoutes = require("./routes/htmlRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const path = require("path");
 
@@ -14,8 +14,9 @@ app.use(express.static(path.join(__dirname, "client/build")));
 
 // Routes
 app.use("/api", apiRoutes);
-// app.use("/", htmlRoutes);
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 app.listen(PORT, function () {
     console.log("Server listening on " + PORT);
 });
