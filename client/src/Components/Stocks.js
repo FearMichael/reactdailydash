@@ -39,21 +39,17 @@ const Stocks = (props) => {
   let searchTimer = null;
 
   const handleChange = (event) => {
-    console.log(event.currentTarget);
     updateAnchorEl(event.currentTarget);
     updateSearch(event.currentTarget.value)
     updateAutoComplete(event.currentTarget.value);
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => fetchAutoComplete(event), 200);
-    console.log(anchorEl)
   }
 
   const [state, notificationDispatch] = useContext(NotificationContext);
 
-  // console.log(notificationDispatch);
   //functions
   const fetchData = () => {
-    console.log(search);
     let url = "/api/stocks";
     if (search === "" || undefined) {
       notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Please enter a valid search term" } })
@@ -70,7 +66,6 @@ const Stocks = (props) => {
     let url = "/api/stockautocomplete"
     props.getInfo(url, { search: search }).then(listData => {
       updateAutoCompleteList(listData.data);
-      console.log(listData.data);
     })
   }
 

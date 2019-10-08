@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid } from "@material-ui/core";
 import axios from 'axios'
 import News from './News';
@@ -10,9 +10,6 @@ import Weather from './Weather';
 const Controller = props => {
 
     const apiPost = (route, data) => {
-        // function escapeRegExp(string) {
-        //     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-        // };
         return axios.post(route, data);
     };
 
@@ -23,7 +20,7 @@ const Controller = props => {
     };
 
     const decreaseSize = (item) => {
-        let filtered = fullScreen.filter(elem => elem != item);
+        let filtered = fullScreen.filter(elem => elem !== item);
         updateFullScreen(filtered);
     };
 
@@ -43,18 +40,18 @@ const Controller = props => {
             <Grid
                 item
                 sm={12}
-                md={fullScreen.includes("stocks") ? 12 : 6}
-                lg={fullScreen.includes("stocks") ? 12 : 6}
-            >
-                <Stocks getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} />
-            </Grid>
-            <Grid
-                item
-                sm={12}
                 md={fullScreen.includes("weather") ? 12 : 6}
                 lg={fullScreen.includes("weather") ? 12 : 6}
             >
                 <Weather getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} />
+            </Grid>
+            <Grid
+                item
+                sm={12}
+                md={fullScreen.includes("stocks") ? 12 : 6}
+                lg={fullScreen.includes("stocks") ? 12 : 6}
+            >
+                <Stocks getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} />
             </Grid>
             <Grid
                 item

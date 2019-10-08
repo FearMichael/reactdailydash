@@ -42,17 +42,15 @@ const News = props => {
 
     const [search, updateSearch] = useState("");
 
-    // const [showImg, updateShowImg] = useState(true);
-
-    const [news, updateNews] = useState()
+    const [news, updateNews] = useState();
 
     const [newsToShow, updateNewsToShow] = useState(3);
 
-    const [state, notificationDispatch] = useContext(NotificationContext);
+    const notificationDispatch = useContext(NotificationContext)[1];
 
     const showMore = () => {
         news.length > newsToShow ? updateNewsToShow(newsToShow + 3) : updateNewsToShow(news.length);
-    }
+    };
 
     const handleChange = (event) => {
         updateSearch(event.target.value);
@@ -67,29 +65,31 @@ const News = props => {
         } else {
             firebase.user && firebase.updateSearchData("news", search);
             props.getInfo(url, { news: data }).then(newsData => {
-                console.log(newsData.data.articles)
                 if (newsData.data.articles.length < 1) {
                     notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Hmm, looks like we couldn't find any news for that search" } })
                 } else {
-                    updateNews(newsData.data.articles);
+                    let sortedNews = newsData.data.articles.sort(function (a, b) {
+                        return moment(b.publishedAt).format("X") - moment(a.publishedAt).format("X");
+                    });
+                    updateNews(sortedNews);
                 }
             });
         }
     };
     useEffect(() => {
         if (firebase.userData && firebase.userData.news) {
-            console.log(firebase.userData.news);
             props.getInfo("/api/news", { news: firebase.userData.news }).then(newsData => {
-                console.log(newsData.data.articles)
                 if (newsData.data.articles.length < 1) {
                     notificationDispatch({ type: UPDATE_NOTIFICATION, notification: { open: true, message: "Hmm, looks like we couldn't find any news for that search" } })
                 } else {
-                    updateNews(newsData.data.articles);
+                    let sortedNews = newsData.data.articles.sort(function (a, b) {
+                        return moment(b.publishedAt).format("X") - moment(a.publishedAt).format("X");
+                    });
+                    updateNews(sortedNews);
                 }
             });
         }
     }, [firebase.userData]);
-    console.log(props);
     let content = (
 
         <Card>

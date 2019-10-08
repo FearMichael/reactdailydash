@@ -51,8 +51,12 @@ routes.post("/news",
 
 routes.post("/weather", async function (req, res) {
     console.log(req.body)
-    const weather = await apiCalls.weather(req.body.zip);
-    res.json(weather);
+    try {
+        const weather = await apiCalls.weather(req.body.zip);
+        res.json(weather);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 //STOCK API

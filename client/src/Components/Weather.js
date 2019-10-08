@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   Card, CardContent, Typography, CardActions, Grid, Zoom, Box,
   Button, CardMedia, CardActionArea, FormControl, InputLabel, Input,
@@ -55,11 +55,15 @@ const Weather = (props) => {
     else {
       firebase.user && firebase.updateSearchData("weather", search);
       props.getInfo(url, { zip: search }).then(weather => {
-        console.log(weather);
         updateWeather(weather.data);
       })
     }
-  }
+  };
+
+  useEffect(() => {
+    firebase.userData && props.getInfo("/api/weather", { zip: firebase.userData.weather })
+      .then(weather => { updateWeather(weather.data) });
+  }, [firebase.userData]);
 
   //component layout
   let content = (
@@ -119,7 +123,7 @@ const Weather = (props) => {
         <CardActions>
           <FormControl>
             <InputLabel htmlFor="my-input">Weather by zip code</InputLabel>
-            <Input id="my-input" aria-describedby="search for weather" onChange={handleChange} />
+            <Input id="my-input" aria-describedby="search for weather" value={search} onChange={handleChange} />
           </FormControl>
           <Button size="large" onClick={fetchData}>Get Weather</Button>
         </CardActions>

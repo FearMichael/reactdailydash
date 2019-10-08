@@ -43,11 +43,15 @@ const FirebaseProvider = (props) => {
 
     const addTask = (task) => {
         console.log(task);
-        return db.collection("users").doc(user.uid).update({ tasks: firebase.firestore.FieldValue.arrayUnion(task) });
+        return db.collection("users").doc(user.uid).collection("todos").add({ name: task, completed: false });
     };
 
-    const deleteTask = (task) => {
-        return db.collection("users").doc(user.uid).update({ tasks: firebase.firestore.FieldValue.arrayRemove(task) });
+    const updateTask = (task, completed, taskId) => {
+        return db.collection("users").doc(user.uid).collection("todos").doc(taskId).update({ name: task, completed: completed });
+    };
+
+    const deleteTask = (taskId) => {
+        return db.collection("users").doc(user.uid).collection("todos").doc(taskId).delete();
     };
 
     const signIn = (email, password) => {
@@ -81,12 +85,19 @@ const FirebaseProvider = (props) => {
                     let name = `${userData.data().firstName} ${userData.data().lastName}`;
                     let userInfo = userData.data();
                     let userWithName = { ...user, name, userInfo }
-                    console.log(userWithName);
                     updateUser(userWithName);
                 });
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
-                    console.log(doc.data());
                     updateUserData(doc.data());
+                });
+                db.collection("users").doc(user.uid).collection("todos").onSnapshot(todos => {
+                    let todoList = [];
+                    todos.forEach(todoItem => {
+                        let todo = { id: todoItem.id, ...todoItem.data() };
+                        todoList.push(todo);
+                    });
+                    updateUserData(prev => { return { ...prev, tasks: todoList } });
+
                 });
             } else {
                 updateUser(null);
@@ -100,7 +111,6 @@ const FirebaseProvider = (props) => {
     };
 
     const signOut = () => {
-        console.log("Signed Out")
         updateUser(null);
         updateUserData(null);
         firebase.auth().signOut().then(() => {
@@ -116,12 +126,13 @@ const FirebaseProvider = (props) => {
         location: locationData,
         news: newsData,
         addTask: addTask,
+        deleteTask: deleteTask,
+        updateTask: updateTask,
         signIn: signIn,
         createAccount: createAccount,
         user: user,
         signOut: signOut,
         addUser: addUser,
-        deleteTask: deleteTask,
     }
 
     return (

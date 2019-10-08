@@ -11,19 +11,17 @@ const apiCall = {
             axios.get(locationSearch).then(function (response) {
                 locationID = response.data[0].ParentCity.Key;
                 let weatherSearch = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationID}?apikey=${process.env.WEATHER}`;
-                // will need to format data and have front end render some graphics/icons based on what the weather is
                 axios.get(weatherSearch).then(function (weatherInfo) {
                     resolve(weatherInfo.data);
                 })
                     .catch(err => {
-                        if (err) { reject(err) }
+                        reject(err);
                     })
             });
         });
     },
 
     news: async (topic) => {
-        // let newsSearch = `https://newsapi.org/v2/everything?q=${topic}&apiKey=${process.env.NEWS}`;
         console.log(topic);
         let newsSearch = `https://newsapi.org/v2/everything?q=${topic}&apiKey=${process.env.NEWS}`
         return new Promise(resolve => {
@@ -45,9 +43,6 @@ const apiCall = {
                 .end(function (result) {
                     resolve(result.body);
                 })
-            // .catch(err => {
-            //     if (err) { console.log(err) }
-            // })
         });
     },
 

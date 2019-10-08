@@ -1,27 +1,33 @@
 import React, { useState, useContext } from "react";
-import { Modal, Input, Box, FormControl, Grid, Button, Paper, makeStyles, ClickAwayListener } from "@material-ui/core";
+import { Dialog, DialogContent, Input, Box, FormControl, Grid, Button, Paper, makeStyles, ClickAwayListener, Typography } from "@material-ui/core";
 import Autorenew from "@material-ui/icons/Autorenew"
 import FirebaseProvider from "./Context/FirebaseContext";
 import FormUtil from "./FormUtil";
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        // margin: "0.5rem auto"
+        backgroundColor: "white",
+        padding: "2rem",
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "center"
     },
     formContent: {
-        margin: "1rem auto",
+        margin: "2rem auto",
         textAlign: "center",
-        fontSize: "2rem"
+        fontSize: "2rem",
+        width: "100%"
+    },
+    buttons: {
+        margin: "0 auto"
     }
 }));
 
+// const RefComp = React.forwardRef((props, ref) => <div ref={ref}> {props.children} </div>);
+
 const SignIn = (props) => {
+
+    // const ref = React.createRef();
 
     const firebaseAuth = useContext(FirebaseProvider);
 
@@ -30,7 +36,6 @@ const SignIn = (props) => {
     const [showForm, updateShowForm] = useState(false);
 
     const [loginType, updateLoginType] = useState(null)
-
 
     const [firstName, updateFirstName] = useState("");
 
@@ -41,6 +46,8 @@ const SignIn = (props) => {
     const [password, updatePassword] = useState("");
 
     const [loggingIn, updateLoggingIn] = useState(false);
+
+    const [error, updateError] = useState(null);
 
     const selectLogin = (loginSelect) => {
         updateShowForm(true)
@@ -55,26 +62,24 @@ const SignIn = (props) => {
 
     const formSignIn = (emailInput, passwordInput) => {
         updateLoggingIn(true)
-        console.log("sign in?")
         firebaseAuth.signIn(emailInput, passwordInput).then(data => {
             if (data) {
+                updateError(null);
                 modalReset()
             };
-        }).catch(err => console.log(err));
+        }).catch(err => { updateError(err.message); updateLoggingIn(false); });
     };
 
     const formCreateAccount = (emailInput, passwordInput) => {
         updateLoggingIn(true)
-        console.log("create account?")
-        console.log(email, password);
         firebaseAuth.createAccount(emailInput, passwordInput).then(data => {
-            console.log(data);
             if (data) {
+                updateError(null);
                 firebaseAuth.addUser(data.user.uid, { firstName: firstName, lastName: lastName })
                 modalReset()
             }
 
-        }).catch(err => console.log(err))
+        }).catch(err => { updateError(err.message); updateLoggingIn(false); });
     };
 
     const modalReset = () => {
@@ -96,7 +101,6 @@ const SignIn = (props) => {
     }
 
     const handleEmailChange = (event) => {
-        console.log(event);
         updateEmail(event.target.value)
     };
     const handlePasswordChange = (event) => {
@@ -110,97 +114,87 @@ const SignIn = (props) => {
     const lastNameChange = (event) => {
         updateLastName(event.target.value);
     }
-    console.log(showForm)
     let content = (
-        <Modal
-            style={{ top: "10%", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "0" }}
+        <Dialog
+            // style={{ top: "10%", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "0" }}
             aria-labelledby="sign-in-form"
             aria-describedby="use-this-form-to-sign-in"
             open={props.formOpen}
             onClose={() => updateShowForm(false)}
         >
-            <ClickAwayListener onClickAway={modalReset}>
-                <Paper className={classes.paper} >
+            <ClickAwayListener onClickAway={modalReset} >
+                <DialogContent className={classes.paper} >
                     {!showForm &&
-                        <>
+                        <Box display="flex" justifyContent="center">
                             <Button onClick={() => selectLogin("create")}>Create Account</Button>
                             <Button onClick={() => selectLogin("signin")}>Sign In</Button>
-                        </>
+                        </Box>
                     }
-
                     {showForm &&
-                        <Grid
-                            container
-                            className={classes.formContent}
-
-                        >
-                            <FormUtil submit={determineLogin}>
-                                {loginType === "create" &&
-                                    <>
-                                        < Grid item sm={12}
-                                        >
-                                            <FormControl>
-                                                <Input
-                                                    inputComponent="input"
-                                                    label="First Name"
-                                                    placeholder="First Name"
-                                                    // value={email}
-                                                    onChange={firstNameChange}
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item sm={12}>
-                                            <FormControl>
-                                                <Input
-                                                    inputComponent="input"
-                                                    label="Last Name"
-                                                    placeholder="Last Name"
-                                                    // value={email}
-                                                    onChange={lastNameChange}
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                    </>
-                                }
-                                <Grid item sm={12}>
-                                    <FormControl>
+                        <FormUtil submit={determineLogin} >
+                            {loginType === "create" &&
+                                <>
+                                    <FormControl fullWidth={true}>
                                         <Input
                                             inputComponent="input"
-                                            label="Email"
-                                            placeholder="Email"
-                                            value={email}
-                                            onChange={handleEmailChange}
+                                            label="First Name"
+                                            placeholder="First Name"
+                                            // value={email}
+                                            fullWidth={true}
+                                            onChange={firstNameChange}
                                         />
                                     </FormControl>
-                                </Grid>
-                                <Grid item sm={12}>
-                                    <FormControl>
-
+                                    <FormControl fullWidth={true}>
                                         <Input
                                             inputComponent="input"
-                                            label="Password"
-                                            placeholder="Password"
-                                            type="password"
-                                            value={password}
-                                            onChange={handlePasswordChange}
+                                            label="Last Name"
+                                            placeholder="Last Name"
+                                            fullWidth={true}
+                                            // value={email}
+                                            onChange={lastNameChange}
                                         />
                                     </FormControl>
-                                    {loggingIn &&
-                                        <Grid item sm={12}>
-                                            <Autorenew className="loadingIcon" />
-                                        </Grid>
-                                    }
-                                </Grid>
-                                <Grid item sm={12}>
-                                    {loginType === "signin" && <Button onClick={() => formSignIn(email, password)}>Sign In</Button>}
-                                    {loginType === "create" && <Button onClick={() => formCreateAccount(email, password)}>Create Account</Button>}
-                                </Grid>
-                            </FormUtil>
-                        </Grid>
+                                </>
+                            }
+                            <FormControl fullWidth={true}>
+                                <Input
+                                    inputComponent="input"
+                                    label="Email"
+                                    placeholder="Email"
+                                    fullWidth={true}
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                />
+                            </FormControl>
+                            <FormControl fullWidth={true}>
+
+                                <Input
+                                    inputComponent="input"
+                                    label="Password"
+                                    placeholder="Password"
+                                    type="password"
+                                    fullWidth={true}
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                />
+                            </FormControl >
+                            {loggingIn &&
+                                <Box display="flex" justifyContent="center">
+                                    <Autorenew className="loadingIcon" />
+                                </Box>
+                            }
+                            <Box display="flex" justifyContent="center">
+                                {loginType === "signin" && <Button onClick={() => formSignIn(email, password)}>Sign In</Button>}
+                                {loginType === "create" && <Button onClick={() => formCreateAccount(email, password)}>Create Account</Button>}
+                            </Box>
+                            <Box display="flex" justifyContent="center">
+                                {error && <Typography style={{ color: "red", textAlign: "center" }}>{error}</Typography>}
+                            </Box>
+                        </FormUtil>
                     }
-                </Paper>
+                </DialogContent>
             </ClickAwayListener>
-        </Modal >
+        </Dialog >
     )
     return content;
 }

@@ -57,11 +57,9 @@ const Nav = (props) => {
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="Menu">
-            {/* <MenuIcon /> */}
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {/* Welcome, {user ? user.email : ":( "} */}
-            {`Welcome ${firebaseAuth.user ? firebaseAuth.user.name : " :( "}`}
+            {firebaseAuth.user && firebaseAuth.user.name}
           </Typography>
           {firebaseAuth.user ?
             <Button color="inherit" onClick={firebaseAuth.signOut}>Sign Out</Button>

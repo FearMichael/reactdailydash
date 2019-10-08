@@ -57,13 +57,7 @@ const Tasks = props => {
 
     const firebase = useContext(FirebaseContext);
 
-    const [showImg, updateShowImg] = useState(true);
-
-    const [state, notificationDispatch] = useContext(NotificationContext);
-
     const [taskItem, updateTaskItem] = useState();
-
-    const [tasks, updateTasks] = useState([]);
 
     const [hoverVis, updateHoverVis] = useState("");
 
@@ -81,29 +75,17 @@ const Tasks = props => {
         updateHoverVis("")
     };
 
-    const deleteItem = (item) => {
-        firebase.deleteTask(item).then(() => console.log("Deleted"));
-        console.log(tasks);
+    const deleteItem = (taskId) => {
+        firebase.deleteTask(taskId).then(() => console.log("Deleted"));
     };
 
-    const editItems = (element) => {
-        if (element === taskItem) {
-            updateEditItem("");
-            updateTaskItem("");
-        } else {
-            updateEditItem(element);
-            updateTaskItem(element);
-        }
+    const editItems = (elementId, elementName) => {
+        updateEditItem(elementId);
+        updateTaskItem(elementName);
     };
 
-    const handleCheck = (event, identifier) => {
-        let checked = !event.target.checked
-        if (checked === false) {
-            updateCheckedItems([...checkedItems, identifier]);
-        } else if (checked === true) {
-            updateCheckedItems(checkedItems.filter(elem => elem !== identifier));
-        }
-        console.log(checkedItems);
+    const handleCheck = (taskName, currentCompleted, taskId) => {
+        firebase.updateTask(taskName, !currentCompleted, taskId).then(data => console.log(data))
     };
 
     const handleChange = (stateItem, event) => {
@@ -117,12 +99,11 @@ const Tasks = props => {
         }
     };
 
-    const saveEdit = (elem) => {
-        let index = tasks.indexOf(elem)
-        let editedArr = [...tasks];
-        editedArr[index] = taskItem;
-        updateTasks(editedArr);
-        updateEditItem("");
+    const saveEdit = (taskName, currentCompleted, taskId) => {
+        firebase.updateTask(taskName, currentCompleted, taskId).then(data => {
+            updateEditItem("");
+        });
+
     }
 
     const addTaskItem = () => {
@@ -130,19 +111,13 @@ const Tasks = props => {
     }
 
     const fetchData = () => {
-        console.log("Fake Fetch");
-        console.log(firebase.user)
         updateShowAdd(false);
     };
 
 
     useEffect(() => {
         fetchData();
-        console.log(tasks);
-        console.log(taskItem);
-
-        console.log(firebase.user);
-    }, [])
+    }, [firebase.userData])
 
     let content = (
         <Card>
@@ -167,22 +142,21 @@ const Tasks = props => {
                     Your Tasks:
                         </Typography>
                 <Typography variant="body2" component="div">
-                    {firebase.userData &&
+                    {firebase.userData && firebase.userData.tasks &&
                         <List> {
-                            firebase.userData.tasks.map((elem, i) => {
+                            firebase.userData.tasks.map(elem => {
                                 return (
-                                    <ListItem key={i} className={classes.listItem} onMouseEnter={() => mouseIn(i)} onMouseLeave={() => mouseOut(i)} >
-                                        {editItem !== elem ?
+                                    <ListItem key={elem.id} className={classes.listItem} onMouseEnter={() => mouseIn(elem.id)} onMouseLeave={() => mouseOut(elem.id)} >
+                                        {editItem !== elem.id ?
                                             <>
-                                                <Checkbox checked={checkedItems.includes(i) ? true : false} onChange={(event) => { handleCheck(event, i) }} />
-                                                <ListItemText className={checkedItems.includes(i) ? classes.listText : null}>{elem}</ListItemText>
+                                                <Checkbox checked={elem.completed} onChange={() => { handleCheck(elem.name, elem.completed, elem.id) }} />
+                                                <ListItemText className={checkedItems.includes(elem.id) ? classes.listText : null}>{elem.name}</ListItemText>
                                             </>
                                             :
-                                            <Grow in={editItem === elem ? true : false} timeout={600}>
+                                            <Grow in={editItem === elem.id ? true : false} timeout={600}>
                                                 <Grid container alignContent="center">
                                                     <Grid item sm={12} md={6} lg={6}>
                                                         <FormControl>
-                                                            {/* <InputLabel htmlFor="my-input">Add Task</InputLabel> */}
                                                             <Input aria-describedby="add task" value={taskItem} onChange={(e) => handleChange("taskItem", e)} />
                                                         </FormControl>
                                                     </Grid>
@@ -190,7 +164,7 @@ const Tasks = props => {
                                                         <Button
                                                             disabled={taskItem ? false : true}
                                                             className={classes.addButton}
-                                                            size="small" onClick={() => saveEdit(elem)}
+                                                            size="small" onClick={() => saveEdit(taskItem, elem.completed, elem.id)}
                                                             aria-label="submit add task">
                                                             Save</Button>
                                                     </Grid>
@@ -200,14 +174,14 @@ const Tasks = props => {
                                         <>
                                             <Button
                                                 className={classes.editButton}
-                                                style={hoverVis !== i.toString() ? { visibility: "hidden" } : { visibility: "visible" }}
-                                                onClick={() => editItems(elem)}>
+                                                style={hoverVis !== elem.id ? { visibility: "hidden" } : { visibility: "visible" }}
+                                                onClick={() => editItems(elem.id, elem.name)}>
                                                 Edit</Button>
 
                                             <Button
                                                 className={classes.deleteButton}
-                                                style={hoverVis !== i.toString() ? { visibility: "hidden" } : { visibility: "visible" }}
-                                                onClick={() => deleteItem(elem)}>
+                                                style={hoverVis !== elem.id ? { visibility: "hidden" } : { visibility: "visible" }}
+                                                onClick={() => deleteItem(elem.id)}>
                                                 Delete</Button>
                                         </>
                                     </ListItem>

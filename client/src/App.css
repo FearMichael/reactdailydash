@@ -45,3 +45,8 @@
   text-align: center;
   margin: 1rem 0;
 }
+
+div > input > .MuiInput-input {
+  width: 100%;
+  border: red 1px solid;
+}
