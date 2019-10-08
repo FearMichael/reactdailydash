@@ -52,27 +52,33 @@ const apiCall = {
 
     stocks: async (search) => {
         console.log(search);
-        return new Promise(resolve => {
-            unirest.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol=${search}&region=US`)
-                .header("X-RapidAPI-Host", process.env.RAPIDAPI_HOST)
-                .header("X-RapidAPI-Key", process.env.RAPIDAPI_KEY)
-                .end(function (result) {
-                    resolve(result.body);
+        return new Promise((resolve, reject) => {
+
+            axios.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol=${search}&region=US`,
+                {
+                    headers: {
+                        "X-RapidAPI-Host": process.env.RAPIDAPI_HOST, "X-RapidAPI-Key": process.env.RAPIDAPI_KEY
+                    }
                 })
+                .then(function (stocks) {
+                    console.log(stocks.data)
+                    resolve(stocks.data);
+                }).catch(err => reject(err));
         });
     },
 
     stockAutoComplete: (search) => {
-        return new Promise(resolve => {
-            unirest.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/auto-complete?lang=en&region=US&query=${search}`)
-                .header("x-rapidapi-host", process.env.AUTOCOMPLETE_HOST)
-                .header("x-rapidapi-key", process.env.AUTOCOMPLETE_KEY)
-                .end(function (result) {
-                    resolve(result.body.ResultSet.Result);
-                })
-                .catch(err => {
-                    if (err) { console.log(err) }
-                })
+        return new Promise((resolve, reject) => {
+            axios.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/auto-complete?lang=en&region=US&query=${search}`,
+                {
+                    headers: {
+                        "x-rapidapi-host": process.env.AUTOCOMPLETE_HOST,
+                        "x-rapidapi-key": process.env.AUTOCOMPLETE_KEY
+                    }
+                }).then(function (autoComplete) {
+                    console.log(autoComplete.data.ResultSet.Result);
+                    resolve(autoComplete.data.ResultSet.Result)
+                }).catch(err => reject(err));
         })
     }
 };
