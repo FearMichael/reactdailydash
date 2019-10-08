@@ -40,9 +40,7 @@ routes.post("/deletetask", function (req, res) {
 //NEWS API
 //Route = /api/news
 routes.post("/news",
-    // passport.authenticate("google", { scope: ["https://www.googleapis.com/auth/plus.login"] }),
     async function (req, res) {
-        // console.log(req.body);
         const news = await apiCalls.news(req.body.news);
         res.json(news);
     });

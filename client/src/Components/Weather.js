@@ -14,10 +14,10 @@ import FullscreenExit from "@material-ui/icons/FullscreenExit";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    maxWidth: "100%",
   },
   table: {
-    minWidth: "100%",
+    maxWidth: "100%",
   },
   icon: {
     margin: "0.5rem 0.5rem 0 0",
@@ -55,14 +55,14 @@ const Weather = (props) => {
     else {
       firebase.user && firebase.updateSearchData("weather", search);
       props.getInfo(url, { zip: search }).then(weather => {
-        updateWeather(weather.data);
+        updateWeather(weather.data.daily.data);
       })
     }
   };
 
   useEffect(() => {
     firebase.userData && props.getInfo("/api/weather", { zip: firebase.userData.weather })
-      .then(weather => { updateWeather(weather.data) });
+      .then(weather => { console.log(weather.data); updateWeather(weather.data.daily.data) }).catch(err => console.log(err));
   }, [firebase.userData]);
 
   //component layout
@@ -88,8 +88,8 @@ const Weather = (props) => {
         <Typography variant="h5" component="h2" className="cardHeader">
           The Weather
         </Typography>
-        <Grid container alignItems="center">
-          {weather ?
+        <Box container="true" alignItems="center">
+          {weather &&
             <Zoom in={weather ? true : false} timeout={600}>
               <Table className={classes.table}>
                 <TableHead>
@@ -97,27 +97,25 @@ const Weather = (props) => {
                     <TableCell>Date</TableCell>
                     <TableCell>High</TableCell>
                     <TableCell>Low</TableCell>
-                    <TableCell>Day</TableCell>
-                    <TableCell>Night</TableCell>
+                    <TableCell>Summary</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {weather.DailyForecasts.map((day, i) => {
+                  {weather.map((day) => {
                     return (
-                      <TableRow key={i}>
-                        <TableCell>{moment(day.EpochDate, "X").format("MMMM Do")}</TableCell>
-                        <TableCell>{day.Temperature.Maximum.Value}{day.Temperature.Minimum.Unit}</TableCell>
-                        <TableCell>{day.Temperature.Minimum.Value}{day.Temperature.Minimum.Unit}</TableCell>
-                        <TableCell>{day.Day.IconPhrase}</TableCell>
-                        <TableCell>{day.Night.IconPhrase}</TableCell>
+                      <TableRow key={day.time}>
+                        <TableCell>{moment(day.time, "X").format("MMMM Do")}</TableCell>
+                        <TableCell>{day.apparentTemperatureHigh}F</TableCell>
+                        <TableCell>{day.apparentTemperatureLow}F</TableCell>
+                        <TableCell>{day.summary}</TableCell>
                       </TableRow>
                     )
                   })}
                 </TableBody>
               </Table>
             </Zoom>
-            : null}
-        </Grid>
+          }
+        </Box>
       </CardContent>
       <Box display="flex" justifyContent="center" mb={1}>
         <CardActions>

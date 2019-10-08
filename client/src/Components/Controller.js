@@ -9,6 +9,12 @@ import Weather from './Weather';
 
 const Controller = props => {
 
+    const [screenSize, updateScreenSize] = useState(window.innerWidth);
+
+    window.addEventListener("resize", function () {
+        window.innerWidth > 959 ? updateScreenSize("large") : updateScreenSize("small");
+    })
+
     const apiPost = (route, data) => {
         return axios.post(route, data);
     };
@@ -27,7 +33,7 @@ const Controller = props => {
     let content = (
         <Grid
             container
-            spacing={1}
+            spacing={screenSize === "large" ? 2 : 0}
         >
             <Grid
                 item
