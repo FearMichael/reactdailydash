@@ -12,6 +12,7 @@ import FirebaseContext from "./Context/FirebaseContext";
 import Fullscreen from "@material-ui/icons/Fullscreen";
 import FullscreenExit from "@material-ui/icons/FullscreenExit";
 
+
 const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: "100%",
@@ -37,13 +38,15 @@ const Weather = (props) => {
 
   const [search, updateSearch] = useState("");
 
-  const [weather, updateWeather] = useState()
+  const [weather, updateWeather] = useState();
+
+  const [weatherLocation, updateWeatherLocation] = useState(null);
 
   const handleChange = (event) => {
     updateSearch(event.currentTarget.value)
   }
 
-  const [state, notificationDispatch] = useContext(NotificationContext);
+  const notificationDispatch = useContext(NotificationContext)[1];
 
   const fetchData = () => {
     let url = "/api/weather";
@@ -55,6 +58,8 @@ const Weather = (props) => {
     else {
       firebase.user && firebase.updateSearchData("weather", search);
       props.getInfo(url, { zip: search }).then(weather => {
+        console.log(weather.data)
+        updateWeatherLocation(weather.data.zipCodeCityName);
         updateWeather(weather.data.daily.data);
       })
     }
@@ -62,7 +67,10 @@ const Weather = (props) => {
 
   useEffect(() => {
     firebase.userData && props.getInfo("/api/weather", { zip: firebase.userData.weather })
-      .then(weather => { console.log(weather.data); updateWeather(weather.data.daily.data) }).catch(err => console.log(err));
+      .then(weather => {
+        updateWeatherLocation(weather.data.zipCodeCityName);
+        updateWeather(weather.data.daily.data)
+      }).catch(err => console.log(err));
   }, [firebase.userData]);
 
   //component layout
@@ -86,7 +94,7 @@ const Weather = (props) => {
           />
         </CardActionArea>
         <Typography variant="h5" component="h2" className="cardHeader">
-          The Weather
+          Weather {weatherLocation && `for ${weatherLocation}`}
         </Typography>
         <Box container="true" alignItems="center">
           {weather &&

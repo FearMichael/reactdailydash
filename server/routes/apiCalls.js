@@ -7,10 +7,9 @@ const apiCall = {
     weather: async (zipCode) => {
         try {
             let location = await axios.get(`https://public.opendatasoft.com/api/records/1.0/search/?dataset=us-zip-code-latitude-and-longitude&q=${zipCode}&facet=state&facet=timezone&facet=dst`);
-            console.log(location.data);
             if (location.data.records[0]) {
                 let weather = await axios.get(`https://api.darksky.net/forecast/${process.env.DARKSKY}/${location.data.records[0].fields.latitude},${location.data.records[0].fields.longitude}?exclude=currently,minutely,hourly`);
-                console.log(weather);
+                weather.data.zipCodeCityName = `${location.data.records[0].fields.city}, ${location.data.records[0].fields.state}`
                 return weather.data
             } else {
                 return new Error("No results for zip code location")
@@ -20,8 +19,7 @@ const apiCall = {
         }
     },
 
-    news: async (topic) => {
-        console.log(topic);
+    news: (topic) => {
         let newsSearch = `https://newsapi.org/v2/everything?q=${topic}&apiKey=${process.env.NEWS}`
         return new Promise((resolve, reject) => {
             axios.get(newsSearch).then(function (newsInfo) {
@@ -33,8 +31,7 @@ const apiCall = {
         });
     },
 
-    stocks: async (search) => {
-        console.log(search);
+    stocks: (search) => {
         return new Promise((resolve, reject) => {
 
             axios.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol=${search}&region=US`,
@@ -44,13 +41,13 @@ const apiCall = {
                     }
                 })
                 .then(function (stocks) {
-                    console.log(stocks.data)
                     resolve(stocks.data);
                 }).catch(err => reject(err));
         });
     },
 
     stockAutoComplete: (search) => {
+        console.log(search);
         return new Promise((resolve, reject) => {
             axios.get(`https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/auto-complete?lang=en&region=US&query=${search}`,
                 {
@@ -59,7 +56,6 @@ const apiCall = {
                         "x-rapidapi-key": process.env.AUTOCOMPLETE_KEY
                     }
                 }).then(function (autoComplete) {
-                    console.log(autoComplete.data.ResultSet.Result);
                     resolve(autoComplete.data.ResultSet.Result)
                 }).catch(err => reject(err));
         })

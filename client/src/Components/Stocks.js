@@ -9,6 +9,9 @@ import { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer";
 import Fullscreen from "@material-ui/icons/Fullscreen";
 import FullscreenExit from "@material-ui/icons/FullscreenExit";
 import FirebaseContext from "./Context/FirebaseContext";
+// import { useDebouncedCallback } from "use-debounce";
+
+import { debounce } from "lodash";
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -37,6 +40,8 @@ const Stocks = (props) => {
 
   const [anchorEl, updateAnchorEl] = useState(null);
 
+  // const [debouncedValue] = useDebouncedCallback(() =>)
+
   //variables
   const [search, updateSearch] = useState("");
 
@@ -47,23 +52,34 @@ const Stocks = (props) => {
   const [autoCompleteList, updateAutoCompleteList] = useState();
 
   const percentRemover = (item) => {
-    console.log(typeof item);
-    console.log(item);
     return item.toString().slice(0, item.length - 1);
 
   }
 
-  let searchTimer = null;
+
+  // const debounce = (func, delay) => {
+  //   let inDebounce
+  //   return function () {
+  //     const args = arguments
+  //     console.log(arguments);
+  //     clearTimeout(inDebounce)
+  //     inDebounce = setTimeout(() => func.apply(args), delay)
+  //   }
+  // }
 
   const handleChange = (event) => {
+    let searchTimer = null;
     updateAnchorEl(event.currentTarget);
     updateSearch(event.currentTarget.value)
     updateAutoComplete(event.currentTarget.value);
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => fetchAutoComplete(event), 200);
-  }
+    // debounce(fetchAutoComplete, 250);
+    // clearTimeout(searchTimer);
+    debounce(fetchAutoComplete, 300)
+    // searchTimer = setTimeout(fetchAutoComplete, 1000 * 5)
+  };
 
-  const [state, notificationDispatch] = useContext(NotificationContext);
+
+  const notificationDispatch = useContext(NotificationContext)[1];
 
   //functions
   const fetchData = () => {
@@ -77,7 +93,7 @@ const Stocks = (props) => {
         updateAutoCompleteList(null);
       })
     }
-  }
+  };
 
   const fetchAutoComplete = () => {
     let url = "/api/stockautocomplete"
@@ -87,12 +103,11 @@ const Stocks = (props) => {
   }
 
   const autoCompleteClick = (item) => {
-    updateSearch(item);
-    fetchData();
-  };
-
-  const dataCheck = (data) => {
-    return data ? data : "Not Available";
+    firebase.userData && firebase.updateSearchData("stocks", search);
+    props.getInfo("/api/stocks", { stock: item }).then(stockData => {
+      updateStocks(stockData.data);
+      updateAutoCompleteList(null);
+    })
   };
 
   useEffect(() => {
@@ -136,7 +151,7 @@ const Stocks = (props) => {
                 component="p">
                 Profits: {stocks.defaultKeyStatistics.profitMargins.fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
 
             {stocks.defaultKeyStatistics["52WeekChange"] ?
               <Typography
@@ -145,7 +160,7 @@ const Stocks = (props) => {
                 component="p">
                 52 Week Change: {stocks.defaultKeyStatistics["52WeekChange"].fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryDetail ?
               <Typography
                 className={classes.stockData}
@@ -153,7 +168,7 @@ const Stocks = (props) => {
                 component="p">
                 Previous Closed Value: $ {stocks.summaryDetail.previousClose.fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryDetail ?
               <Typography
                 className={stocks.summaryDetail.previousClose.fmt < stocks.summaryDetail.regularMarketOpen.fmt ? `${classes.stockData} ${classes.green}` : `${classes.stockData} ${classes.red}`}
@@ -161,7 +176,7 @@ const Stocks = (props) => {
                 component="p">
                 Market Open Value: $ {stocks.summaryDetail.regularMarketOpen.fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryDetail ?
               <Typography
                 className={stocks.summaryDetail.previousClose.fmt < stocks.summaryDetail.regularMarketOpen.fmt ? `${classes.stockData} ${classes.green}` : `${classes.stockData} ${classes.red}`}
@@ -169,7 +184,7 @@ const Stocks = (props) => {
                 component="p">
                 Close to Open Differential: $ {parseFloat(stocks.summaryDetail.regularMarketOpen.fmt - stocks.summaryDetail.previousClose.fmt).toFixed(2)}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryProfile ?
 
               <Typography
@@ -178,14 +193,14 @@ const Stocks = (props) => {
                 Sector: {stocks.summaryProfile.sector}
               </Typography>
 
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
             {stocks.symbol ?
               <Typography
                 className={classes.stockData}
                 variant="body2" component="p">
                 Symbol: {stocks.symbol.toUpperCase()}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> "Not Available" </Typography>}
+              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
 
 
           </Box>
@@ -195,7 +210,7 @@ const Stocks = (props) => {
         <CardActions>
           <FormControl >
             <InputLabel htmlFor="my-input">Check Stocks</InputLabel>
-            <Input aria-describedby="search for Stocks!" value={search} onChange={handleChange} />
+            <Input fullWidth={true} aria-describedby="search for Stocks!" value={search} onChange={handleChange} />
             {autoCompleteList &&
               <Popper anchorEl={anchorEl} open={autoCompleteList ? true : false}>
                 <Paper square>{

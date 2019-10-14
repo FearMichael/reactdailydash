@@ -65,13 +65,16 @@ const FirebaseProvider = (props) => {
     const updateSearchData = (key, value) => {
         switch (key) {
             case "weather":
-                db.collection("users").doc(user.uid).update({ "weather": value }).then((data) => console.log(data));
+                db.collection("users").doc(user.uid).update({ "weather": value })
+                    .then().catch(err => console.log(err));
                 break;
             case "news":
-                db.collection("users").doc(user.uid).update({ "news": value }).then((data) => console.log(data));
+                db.collection("users").doc(user.uid).update({ "news": value })
+                    .then().catch(err => console.log(err));
                 break;
             case "stocks":
-                db.collection("users").doc(user.uid).update({ "stocks": value }).then((data) => console.log(data));
+                db.collection("users").doc(user.uid).update({ "stocks": value })
+                    .then().catch(err => console.log(err));
                 break;
         }
     }
