@@ -9,6 +9,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ClickAwayListener } from "@material-ui/core";
 import SignIn from "./SignIn";
 import FirebaseProvider from "./Context/FirebaseContext";
+import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
 
 
 const useStyles = makeStyles(theme => ({
@@ -20,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
+    marginLeft: "1rem"
   },
   appBar: {
     backgroundColor: "#455766"
@@ -36,6 +39,12 @@ const Nav = (props) => {
 
   const [modal, updateModal] = useState(false);
 
+  const [upload, updateUpload] = useState(false);
+
+  const showUpload = () => {
+    updateUpload(!upload);
+  };
+
   const openModal = () => {
     console.log("opened")
     updateModal(true)
@@ -50,7 +59,7 @@ const Nav = (props) => {
   //   updateUser(firebaseAuth.getUser())
   //   console.log(user)
   // }, []);
-  console.log(firebaseAuth.user)
+  console.log(firebaseAuth.user);
 
   let content = (
     <div className={classes.root}>
@@ -58,14 +67,23 @@ const Nav = (props) => {
         <Toolbar>
           <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="Menu">
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {firebaseAuth.user && firebaseAuth.user.name}
-          </Typography>
-          {firebaseAuth.user ?
-            <Button color="inherit" onClick={firebaseAuth.signOut}>Sign Out</Button>
-            :
-            <Button color="inherit" onClick={openModal}>Sign In</Button>
-          }
+          <Box>
+            <Avatar alt={firebaseAuth.user || "Default avatar"} src={firebaseAuth.profilePic || "./images/avatarDefault.jpg"} onClick={showUpload} />
+            <Typography variant="h6" className={classes.title}>
+              {firebaseAuth.user && firebaseAuth.user.name}
+            </Typography>
+            {showUpload &&
+              <input type="file" />
+            }
+          </Box>
+          <Box display="flex" flexDirection="row-reverse">
+
+            {firebaseAuth.user ?
+              <Button color="inherit" onClick={firebaseAuth.signOut}>Sign Out</Button>
+              :
+              <Button color="inherit" onClick={openModal}>Sign In</Button>
+            }
+          </Box>
         </Toolbar>
       </AppBar>
       <SignIn formOpen={modal} closeModal={closeModal} />
