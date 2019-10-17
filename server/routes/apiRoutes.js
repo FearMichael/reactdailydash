@@ -1,6 +1,12 @@
 require("dotenv").config({ path: "../env" });
 const routes = require("express").Router();
 const apiCalls = require("./apiCalls");
+
+
+routes.post("/imageupload", function (req, res) {
+    console.log(req.files);
+    res.status(200)
+})
 //NEWS API
 //Route = /api/news
 routes.post("/news",

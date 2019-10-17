@@ -42,8 +42,20 @@ const Nav = (props) => {
   const [upload, updateUpload] = useState(false);
 
   const showUpload = () => {
+    console.log(upload);
     updateUpload(!upload);
   };
+
+  const sendPic = e => {
+    console.log(e)
+    let files = Array.from(e.target.files);
+    let formData = new FormData();
+    formData.append("avatar", files[0]);
+    console.log(formData)
+    fetch("/api/imageupload", { method: "POST", body: formData })
+      .then(uploadUrl => console.log(uploadUrl))
+      .catch(err => console.log(err))
+  }
 
   const openModal = () => {
     console.log("opened")
@@ -67,13 +79,14 @@ const Nav = (props) => {
         <Toolbar>
           <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="Menu">
           </IconButton>
-          <Box>
+          <Box >
             <Avatar alt={firebaseAuth.user || "Default avatar"} src={firebaseAuth.profilePic || "./images/avatarDefault.jpg"} onClick={showUpload} />
             <Typography variant="h6" className={classes.title}>
               {firebaseAuth.user && firebaseAuth.user.name}
             </Typography>
-            {showUpload &&
-              <input type="file" />
+            {upload &&
+              <input type="file" onChange={sendPic} multiple />
+
             }
           </Box>
           <Box display="flex" flexDirection="row-reverse">
