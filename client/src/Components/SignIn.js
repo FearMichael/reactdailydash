@@ -75,7 +75,14 @@ const SignIn = (props) => {
         firebaseAuth.createAccount(emailInput, passwordInput).then(data => {
             if (data) {
                 updateError(null);
-                firebaseAuth.addUser(data.user.uid, { firstName: firstName, lastName: lastName })
+                firebaseAuth.addUser(data.user.uid, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    profilePic: null,
+                    weather: null,
+                    news: null,
+                    stocks: null
+                })
                 modalReset()
             }
 

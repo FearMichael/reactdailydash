@@ -11,6 +11,7 @@ import SignIn from "./SignIn";
 import FirebaseProvider from "./Context/FirebaseContext";
 import Avatar from "@material-ui/core/Avatar";
 import Box from "@material-ui/core/Box";
+import axios from 'axios';
 
 
 const useStyles = makeStyles(theme => ({
@@ -41,37 +42,34 @@ const Nav = (props) => {
 
   const [upload, updateUpload] = useState(false);
 
+  const [file, updateFile] = useState(null);
+
   const showUpload = () => {
-    console.log(upload);
     updateUpload(!upload);
   };
 
-  const sendPic = e => {
-    console.log(e)
-    let files = Array.from(e.target.files);
+  const picToSend = e => {
+    e.preventDefault();
     let formData = new FormData();
-    formData.append("avatar", files[0]);
-    console.log(formData)
-    fetch("/api/imageupload", { method: "POST", body: formData })
-      .then(uploadUrl => console.log(uploadUrl))
+    formData.append("file", e.target.files[0]);
+    updateFile(formData);
+  }
+
+  const uploadPicture = () => {
+    axios.post("/api/imageupload", file)
+      .then(uploadData => {
+        firebaseAuth.addProfilePic(uploadData.data).then().catch(err => console.log("Error add profile picture to database", err))
+      })
       .catch(err => console.log(err))
   }
 
   const openModal = () => {
-    console.log("opened")
     updateModal(true)
   };
 
   const closeModal = () => {
-    console.log("closed")
     updateModal(false);
   };
-
-  // useEffect(() => {
-  //   updateUser(firebaseAuth.getUser())
-  //   console.log(user)
-  // }, []);
-  console.log(firebaseAuth.user);
 
   let content = (
     <div className={classes.root}>
@@ -80,13 +78,15 @@ const Nav = (props) => {
           <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="Menu">
           </IconButton>
           <Box >
-            <Avatar alt={firebaseAuth.user || "Default avatar"} src={firebaseAuth.profilePic || "./images/avatarDefault.jpg"} onClick={showUpload} />
+            <Avatar alt="avatar" src={firebaseAuth.userData && firebaseAuth.userData.profilePic || "./images/avatarDefault.jpg"} onClick={showUpload} />
             <Typography variant="h6" className={classes.title}>
               {firebaseAuth.user && firebaseAuth.user.name}
             </Typography>
             {upload &&
-              <input type="file" onChange={sendPic} multiple />
-
+              <Box>
+                <input type="file" encType="multipart/form-data" onChange={picToSend} name="file" />
+                <Button onClick={uploadPicture} disabled={file ? false : true}>Upload</Button>
+              </Box>
             }
           </Box>
           <Box display="flex" flexDirection="row-reverse">

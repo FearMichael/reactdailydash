@@ -58,7 +58,6 @@ const Weather = (props) => {
     else {
       firebase.user && firebase.updateSearchData("weather", search);
       props.getInfo(url, { zip: search }).then(weather => {
-        console.log(weather.data)
         updateWeatherLocation(weather.data.zipCodeCityName);
         updateWeather(weather.data.daily.data);
       })
@@ -66,7 +65,7 @@ const Weather = (props) => {
   };
 
   useEffect(() => {
-    firebase.userData && props.getInfo("/api/weather", { zip: firebase.userData.weather })
+    firebase.userData && firebase.userData.weatherLocation && props.getInfo("/api/weather", { zip: firebase.userData.weather })
       .then(weather => {
         updateWeatherLocation(weather.data.zipCodeCityName);
         updateWeather(weather.data.daily.data)

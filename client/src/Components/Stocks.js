@@ -56,17 +56,6 @@ const Stocks = (props) => {
 
   }
 
-
-  // const debounce = (func, delay) => {
-  //   let inDebounce
-  //   return function () {
-  //     const args = arguments
-  //     console.log(arguments);
-  //     clearTimeout(inDebounce)
-  //     inDebounce = setTimeout(() => func.apply(args), delay)
-  //   }
-  // }
-
   const handleChange = (event) => {
     let searchTimer = null;
     updateAnchorEl(event.currentTarget);
@@ -111,7 +100,7 @@ const Stocks = (props) => {
   };
 
   useEffect(() => {
-    if (firebase.userData) {
+    if (firebase.userData && firebase.userData.stocks) {
       let url = "/api/stocks"
       props.getInfo(url, { stock: firebase.userData.stocks }).then(listData => {
         updateStocks(listData.data);

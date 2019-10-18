@@ -76,7 +76,7 @@ const Tasks = props => {
     };
 
     const deleteItem = (taskId) => {
-        firebase.deleteTask(taskId).then(() => console.log("Deleted"));
+        firebase.deleteTask(taskId).then().catch(err => console.log(err));
     };
 
     const editItems = (elementId, elementName) => {
@@ -85,7 +85,7 @@ const Tasks = props => {
     };
 
     const handleCheck = (taskName, currentCompleted, taskId) => {
-        firebase.updateTask(taskName, !currentCompleted, taskId).then(data => console.log(data))
+        firebase.updateTask(taskName, !currentCompleted, taskId).then().catch(err => console.log(err));
     };
 
     const handleChange = (stateItem, event) => {
@@ -107,7 +107,7 @@ const Tasks = props => {
     }
 
     const addTaskItem = () => {
-        firebase.addTask(taskItem).then(newTasks => console.log(newTasks));
+        firebase.addTask(taskItem).then().catch(err => console.log(err));
     }
 
     const fetchData = () => {

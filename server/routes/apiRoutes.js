@@ -2,10 +2,54 @@ require("dotenv").config({ path: "../env" });
 const routes = require("express").Router();
 const apiCalls = require("./apiCalls");
 
+const multer = require("multer");
+const upload = multer();
+// const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
+// AWS.config.setPromisesDependency();
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: "us-east-1"
+});
+const s3 = new AWS.S3({ params: { Bucket: "reactdailydashpictures" } });
 
-routes.post("/imageupload", function (req, res) {
-    console.log(req.files);
-    res.status(200)
+// const upload = multer({
+//     storage: multerS3({
+//         s3: s3,
+//         bucket: 'reactdailydashpictures',
+//         acl: "public-read",
+//         metadata: function (req, file, cb) {
+//             cb(null, { fieldName: file.fieldname });
+//         },
+//         key: function (req, file, cb) {
+//             cb(null, Date.now().toString())
+//         }
+//     })
+// })
+// const singleUpload = upload.single("file");
+
+
+routes.post("/imageupload", upload.single("file"), function (req, res) {
+    // singleUpload(req, res, function (err) {
+    //     err && console.log(err)
+    //     return res.json({ imageUrl: file.location });
+    // })
+    // console.log(req);
+    const s3Upload = new AWS.S3.ManagedUpload({
+        params: {
+            Bucket: "dailydashpictures",
+            Key: req.file.originalname,
+            Body: req.file.buffer,
+            ACL: "public-read"
+        }
+    });
+    let upload = s3Upload.promise()
+    upload.then(function (uploaded) {
+        console.log(uploaded)
+        res.json(uploaded.Location)
+    }).catch(err => console.log(err));
+    // console.log(req.body.files);
 })
 //NEWS API
 //Route = /api/news

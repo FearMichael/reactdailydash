@@ -21,28 +21,13 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-let userId;
-// firebase.auth().
-// db.collection("users").where("email", "==", "mtfear@hotmail.com").get().then(users => { return users.length > 1 ? "Error too many results" : console.log(users.docs[0].id) });
-
-// const user = db.collection("users");
-
 const FirebaseProvider = (props) => {
-
-    const [taskData, updateTaskData] = useState();
-
-    const [stockData, updateStockData] = useState();
-
-    const [locationData, updateLocationData] = useState();
-
-    const [newsData, updateNewsData] = useState();
 
     const [userData, updateUserData] = useState();
 
     const [user, updateUser] = useState(null);
 
     const addTask = (task) => {
-        console.log(task);
         return db.collection("users").doc(user.uid).collection("todos").add({ name: task, completed: false });
     };
 
@@ -61,6 +46,10 @@ const FirebaseProvider = (props) => {
     const createAccount = (email, password) => {
         return firebase.auth().createUserWithEmailAndPassword(email, password);
     };
+
+    const addProfilePic = (url) => {
+        return db.collection("users").doc(user.uid).update({ "profilePic": url });
+    }
 
     const updateSearchData = (key, value) => {
         switch (key) {
@@ -124,10 +113,6 @@ const FirebaseProvider = (props) => {
     let state = {
         updateSearchData: updateSearchData,
         userData: userData,
-        tasks: taskData,
-        stocks: stockData,
-        location: locationData,
-        news: newsData,
         addTask: addTask,
         deleteTask: deleteTask,
         updateTask: updateTask,
@@ -136,6 +121,7 @@ const FirebaseProvider = (props) => {
         user: user,
         signOut: signOut,
         addUser: addUser,
+        addProfilePic, addProfilePic
     }
 
     return (
