@@ -147,7 +147,7 @@ const Tasks = props => {
                                         {editItem !== elem.id ?
                                             <>
                                                 <Checkbox checked={elem.completed} onChange={() => { handleCheck(elem.name, elem.completed, elem.id) }} />
-                                                <ListItemText className={classes.listText}>{elem.name}</ListItemText>
+                                                <ListItemText className={elem.completed && classes.listText}>{elem.name}</ListItemText>
                                             </>
                                             :
                                             <Grow in={editItem === elem.id ? true : false} timeout={600}>

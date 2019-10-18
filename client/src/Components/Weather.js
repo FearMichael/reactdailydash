@@ -17,9 +17,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: "100%",
   },
-  table: {
-    maxWidth: "100%",
-  },
   icon: {
     margin: "0.5rem 0.5rem 0 0",
     "&:hover": {
@@ -65,13 +62,13 @@ const Weather = (props) => {
   };
 
   useEffect(() => {
-    firebase.userData && firebase.userData.weatherLocation && props.getInfo("/api/weather", { zip: firebase.userData.weather })
+    firebase.userData && firebase.userData.weather && props.getInfo("/api/weather", { zip: firebase.userData.weather })
       .then(weather => {
         updateWeatherLocation(weather.data.zipCodeCityName);
         updateWeather(weather.data.daily.data)
       }).catch(err => console.log(err));
   }, [firebase.userData]);
-
+  console.log(props);
   //component layout
   let content = (
     <Card>
@@ -98,7 +95,7 @@ const Weather = (props) => {
         <Box container="true" alignItems="center">
           {weather &&
             <Zoom in={weather ? true : false} timeout={600}>
-              <Table className={classes.table}>
+              <Table >
                 <TableHead>
                   <TableRow>
                     <TableCell>Date</TableCell>
@@ -107,7 +104,7 @@ const Weather = (props) => {
                     <TableCell>Summary</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody className={props.screenSize === "small" ? "compactTable" : null}>
                   {weather.map((day) => {
                     return (
                       <TableRow key={day.time}>

@@ -9,7 +9,8 @@ import Weather from './Weather';
 
 const Controller = props => {
 
-    const [screenSize, updateScreenSize] = useState(window.innerWidth);
+    const [screenSize, updateScreenSize] = useState(window.innerWidth > 959 ? "large" : "small");
+
 
     window.addEventListener("resize", function () {
         window.innerWidth > 959 ? updateScreenSize("large") : updateScreenSize("small");
@@ -49,7 +50,7 @@ const Controller = props => {
                 md={fullScreen.includes("weather") ? 12 : 6}
                 lg={fullScreen.includes("weather") ? 12 : 6}
             >
-                <Weather getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} />
+                <Weather getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} screenSize={screenSize} />
             </Grid>
             <Grid
                 item

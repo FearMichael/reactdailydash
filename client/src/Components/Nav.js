@@ -9,6 +9,7 @@ import SignIn from "./SignIn";
 import FirebaseProvider from "./Context/FirebaseContext";
 import Avatar from "@material-ui/core/Avatar";
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid"
 import axios from 'axios';
 
 
@@ -24,7 +25,12 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "1rem"
   },
   appBar: {
-    backgroundColor: "#455766"
+    backgroundColor: "#455766",
+    padding: "0.5rem 0"
+  },
+  uploadButton: {
+    backgroundColor: "white",
+    padding: "0.25rem"
   }
 }));
 
@@ -75,19 +81,26 @@ const Nav = (props) => {
         <Toolbar>
           <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="Menu">
           </IconButton>
-          <Box >
-            <Avatar alt="avatar" src={(firebaseAuth.userData && firebaseAuth.userData.profilePic) || "./images/avatarDefault.jpg"} onClick={showUpload} />
-            <Typography variant="h6" className={classes.title}>
-              {firebaseAuth.user && firebaseAuth.user.name}
-            </Typography>
-            {upload &&
-              <Box>
-                <input type="file" encType="multipart/form-data" onChange={picToSend} name="file" />
-                <Button onClick={uploadPicture} disabled={file ? false : true}>Upload</Button>
-              </Box>
-            }
-          </Box>
-          <Box display="flex" flexDirection="row-reverse">
+          <Grid container style={{ width: "70%" }}>
+            <Grid item sm={1}>
+              <Avatar alt="avatar" src={(firebaseAuth.userData && firebaseAuth.userData.profilePic) || "./images/avatarDefault.jpg"} onClick={showUpload} />
+            </Grid>
+            <Grid item sm={4}>
+
+              <Typography variant="h6">
+                {firebaseAuth.user && firebaseAuth.user.name}
+              </Typography>
+
+              {upload &&
+                <Box>
+                  <input type="file" encType="multipart/form-data" onChange={picToSend} name="file" />
+                  <Button className={classes.uploadButton} onClick={uploadPicture} disabled={file ? false : true}>Upload</Button>
+                </Box>
+              }
+
+            </Grid>
+          </Grid>
+          <Box display="flex" justifyContent="flex-end">
 
             {firebaseAuth.user ?
               <Button color="inherit" onClick={firebaseAuth.signOut}>Sign Out</Button>

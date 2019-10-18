@@ -50,3 +50,7 @@ div > input > .MuiInput-input {
   width: 100%;
   border: red 1px solid;
 }
+
+.compactTable td {
+  padding: 0.15rem;
+}
