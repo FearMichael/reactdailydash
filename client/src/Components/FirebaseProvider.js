@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import NotificationsContext from "./Context/NotificationContext";
-// import NotificationsReducer, { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer";
 import FirebaseContext from "./Context/FirebaseContext";
 import firebase from "firebase/app";
 import "firebase/firebase-firestore";
@@ -65,6 +63,8 @@ const FirebaseProvider = (props) => {
                 db.collection("users").doc(user.uid).update({ "stocks": value })
                     .then().catch(err => console.log(err));
                 break;
+            default:
+                console.log("Error no items to update in database");
         }
     }
 
@@ -121,7 +121,7 @@ const FirebaseProvider = (props) => {
         user: user,
         signOut: signOut,
         addUser: addUser,
-        addProfilePic, addProfilePic
+        addProfilePic: addProfilePic
     }
 
     return (

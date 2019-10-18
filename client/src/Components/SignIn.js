@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { Dialog, DialogContent, Input, Box, FormControl, Grid, Button, Paper, makeStyles, ClickAwayListener, Typography } from "@material-ui/core";
+import { Dialog, DialogContent, Input, Box, FormControl, Button, makeStyles, ClickAwayListener, Typography } from "@material-ui/core";
 import Autorenew from "@material-ui/icons/Autorenew"
 import FirebaseProvider from "./Context/FirebaseContext";
 import FormUtil from "./FormUtil";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     paper: {
         backgroundColor: "white",
         padding: "2rem",

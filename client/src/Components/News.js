@@ -1,17 +1,14 @@
-import React, { useContext, useEffect, useState, useReducer } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import moment from "moment";
 
 import {
-    Card, CardContent, Typography, CardActions, Box,
+    Card, CardContent, Typography, Box,
     Button, CardMedia, CardActionArea, FormControl, InputLabel, Input, Divider
 } from "@material-ui/core";
 
 import NotificationContext from "./Context/NotificationContext";
-// import NotificationSnackbar from "./NotificationSnackbar";
-// import NotificationProvider from "./NotificationProvider";
 import { UPDATE_NOTIFICATION } from './Reducers/NotificationsReducer';
-import NotificationsReducer from "./Reducers/NotificationsReducer";
 import NewsItem from "./NewsItem";
 import FirebaseContext from './Context/FirebaseContext';
 import { makeStyles } from '@material-ui/styles';
@@ -89,7 +86,7 @@ const News = props => {
                 }
             });
         }
-    }, [firebase.userData]);
+    }, [firebase.userData, notificationDispatch]);
     let content = (
 
         <Card>

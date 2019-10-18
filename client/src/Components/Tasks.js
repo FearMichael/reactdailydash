@@ -5,7 +5,6 @@ import {
 } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons"
 import { makeStyles } from "@material-ui/styles"
-import NotificationContext from "./Context/NotificationContext";
 import FirebaseContext from './Context/FirebaseContext';
 import Fullscreen from "@material-ui/icons/Fullscreen";
 import FullscreenExit from "@material-ui/icons/FullscreenExit";
@@ -62,8 +61,6 @@ const Tasks = props => {
     const [hoverVis, updateHoverVis] = useState("");
 
     const [showAdd, updateShowAdd] = useState(true);
-
-    const [checkedItems, updateCheckedItems] = useState([]);
 
     const [editItem, updateEditItem] = useState("");
 
@@ -150,7 +147,7 @@ const Tasks = props => {
                                         {editItem !== elem.id ?
                                             <>
                                                 <Checkbox checked={elem.completed} onChange={() => { handleCheck(elem.name, elem.completed, elem.id) }} />
-                                                <ListItemText className={checkedItems.includes(elem.id) ? classes.listText : null}>{elem.name}</ListItemText>
+                                                <ListItemText className={classes.listText}>{elem.name}</ListItemText>
                                             </>
                                             :
                                             <Grow in={editItem === elem.id ? true : false} timeout={600}>

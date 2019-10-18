@@ -1,13 +1,13 @@
-import React, { useContext, useReducer, useEffect } from "react";
+import React, { useContext, useReducer } from "react";
 import NotificationsContext from "./Context/NotificationContext";
-import NotificationsReducer, { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer";
+import NotificationsReducer from "./Reducers/NotificationsReducer";
 import NotificationContext from "./Context/NotificationContext"
 
 const NotificationProvider = (props) => {
 
-const defaultState = useContext(NotificationContext);
+    const defaultState = useContext(NotificationContext);
 
-const [state, notificationDispatch] = useReducer(NotificationsReducer, defaultState);
+    const [state, notificationDispatch] = useReducer(NotificationsReducer, defaultState);
 
     return (
         <NotificationsContext.Provider value={[state, notificationDispatch]}>

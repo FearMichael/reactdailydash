@@ -9,11 +9,10 @@ import { UPDATE_NOTIFICATION } from "./Reducers/NotificationsReducer";
 import Fullscreen from "@material-ui/icons/Fullscreen";
 import FullscreenExit from "@material-ui/icons/FullscreenExit";
 import FirebaseContext from "./Context/FirebaseContext";
-// import { useDebouncedCallback } from "use-debounce";
 
 import { debounce } from "lodash";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   icon: {
     margin: "0.5rem 0.5rem 0 0",
     "&:hover": {
@@ -47,7 +46,7 @@ const Stocks = (props) => {
 
   const [stocks, updateStocks] = useState();
 
-  const [autoComplete, updateAutoComplete] = useState("");
+  // const [autoComplete, updateAutoComplete] = useState("");
 
   const [autoCompleteList, updateAutoCompleteList] = useState();
 
@@ -57,10 +56,10 @@ const Stocks = (props) => {
   }
 
   const handleChange = (event) => {
-    let searchTimer = null;
+    // let searchTimer = null;
     updateAnchorEl(event.currentTarget);
     updateSearch(event.currentTarget.value)
-    updateAutoComplete(event.currentTarget.value);
+    // updateAutoComplete(event.currentTarget.value);
     // debounce(fetchAutoComplete, 250);
     // clearTimeout(searchTimer);
     debounce(fetchAutoComplete, 300)
