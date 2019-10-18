@@ -8,7 +8,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node ./server/server.js",
-    "build": "cd ./client && react-scripts build",
+    "build": "cd ./client && yarn build",
     "lint": "eslint **/*.js --quiet",
     "fix": "eslint --fix .",
     "test": "npm run lint && NODE_ENV=test mocha -u tdd --reporter spec --exit"
