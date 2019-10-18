@@ -19,10 +19,6 @@ const useStyles = makeStyles(() => ({
       cursor: "pointer"
     }
   },
-  stockData: {
-    fontSize: "1.25rem",
-    marginLeft: "10rem"
-  },
   red: {
     color: "#E15554"
   },
@@ -131,64 +127,64 @@ const Stocks = (props) => {
           The Stocks
         </Typography>
         {stocks &&
-          <Box>
+          <Box className="stockData">
             {stocks.defaultKeyStatistics.profitMargins ?
               <Typography
-                className={percentRemover(stocks.defaultKeyStatistics.profitMargins.fmt) > 0 ? `${classes.stockData} ${classes.green}` : `${classes.stockData} ${classes.red}`}
+                className={percentRemover(stocks.defaultKeyStatistics.profitMargins.fmt) > 0 ? `stockData ${classes.green}` : `stockData ${classes.red}`}
                 variant="body2"
                 component="p">
                 Profits: {stocks.defaultKeyStatistics.profitMargins.fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
 
             {stocks.defaultKeyStatistics["52WeekChange"] ?
               <Typography
-                className={percentRemover(stocks.defaultKeyStatistics["52WeekChange"].fmt) > 0 ? `${classes.stockData} ${classes.green}` : `${classes.stockData} ${classes.red}`}
+                className={percentRemover(stocks.defaultKeyStatistics["52WeekChange"].fmt) > 0 ? `stockData ${classes.green}` : `stockData ${classes.red}`}
                 variant="body2"
                 component="p">
                 52 Week Change: {stocks.defaultKeyStatistics["52WeekChange"].fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryDetail ?
               <Typography
-                className={classes.stockData}
+                className="stockData"
                 variant="body2"
                 component="p">
                 Previous Closed Value: $ {stocks.summaryDetail.previousClose.fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryDetail ?
               <Typography
-                className={stocks.summaryDetail.previousClose.fmt < stocks.summaryDetail.regularMarketOpen.fmt ? `${classes.stockData} ${classes.green}` : `${classes.stockData} ${classes.red}`}
+                className={stocks.summaryDetail.previousClose.fmt < stocks.summaryDetail.regularMarketOpen.fmt ? `stockData ${classes.green}` : `stockData ${classes.red}`}
                 variant="body2"
                 component="p">
                 Market Open Value: $ {stocks.summaryDetail.regularMarketOpen.fmt}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryDetail ?
               <Typography
-                className={stocks.summaryDetail.previousClose.fmt < stocks.summaryDetail.regularMarketOpen.fmt ? `${classes.stockData} ${classes.green}` : `${classes.stockData} ${classes.red}`}
+                className={stocks.summaryDetail.previousClose.fmt < stocks.summaryDetail.regularMarketOpen.fmt ? `stockData ${classes.green}` : `stockData ${classes.red}`}
                 variant="body2"
                 component="p">
                 Close to Open Differential: $ {parseFloat(stocks.summaryDetail.regularMarketOpen.fmt - stocks.summaryDetail.previousClose.fmt).toFixed(2)}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
             {stocks.summaryProfile ?
 
               <Typography
-                className={classes.stockData}
+                className="stockData"
                 variant="body2" component="p">
                 Sector: {stocks.summaryProfile.sector}
               </Typography>
 
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
             {stocks.symbol ?
               <Typography
-                className={classes.stockData}
+                className="stockData"
                 variant="body2" component="p">
                 Symbol: {stocks.symbol.toUpperCase()}
               </Typography>
-              : <Typography className={classes.stockData} variant="body2" component="p"> Not Available </Typography>}
+              : <Typography className="stockData" variant="body2" component="p"> Not Available </Typography>}
 
 
           </Box>

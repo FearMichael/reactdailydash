@@ -54,3 +54,16 @@ div > input > .MuiInput-input {
 .compactTable td {
   padding: 0.15rem;
 }
+
+.MuiTypography-body2.stockData {
+  font-size: 1.25rem;
+  margin-left: 10rem;
+}
+
+@media screen and (max-width: 959px) {
+  .MuiTypography-body2.stockData {
+      font-size: 0.9rem;
+      margin: auto;
+      text-align: center;
+  }
+}

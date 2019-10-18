@@ -101,7 +101,9 @@ const Weather = (props) => {
                     <TableCell>Date</TableCell>
                     <TableCell>High</TableCell>
                     <TableCell>Low</TableCell>
-                    <TableCell>Summary</TableCell>
+                    {props.rawScreenSize > 379 &&
+                      <TableCell>Summary</TableCell>
+                    }
                   </TableRow>
                 </TableHead>
                 <TableBody className={props.screenSize === "small" ? "compactTable" : null}>
@@ -111,7 +113,9 @@ const Weather = (props) => {
                         <TableCell>{moment(day.time, "X").format("MMMM Do")}</TableCell>
                         <TableCell>{day.apparentTemperatureHigh}F</TableCell>
                         <TableCell>{day.apparentTemperatureLow}F</TableCell>
-                        <TableCell>{day.summary}</TableCell>
+                        { props.rawScreenSize > 379 &&
+                          <TableCell>{day.summary}</TableCell>
+                        }
                       </TableRow>
                     )
                   })}

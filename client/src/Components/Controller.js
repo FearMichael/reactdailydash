@@ -11,9 +11,12 @@ const Controller = props => {
 
     const [screenSize, updateScreenSize] = useState(window.innerWidth > 959 ? "large" : "small");
 
+    const [rawScreenSize, updateRawScreenSize] = useState(window.innerWidth);
+
 
     window.addEventListener("resize", function () {
         window.innerWidth > 959 ? updateScreenSize("large") : updateScreenSize("small");
+        updateRawScreenSize(window.innerWidth);
     })
 
     const apiPost = (route, data) => {
@@ -50,7 +53,7 @@ const Controller = props => {
                 md={fullScreen.includes("weather") ? 12 : 6}
                 lg={fullScreen.includes("weather") ? 12 : 6}
             >
-                <Weather getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} screenSize={screenSize} />
+                <Weather getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} screenSize={screenSize} rawScreenSize={rawScreenSize} />
             </Grid>
             <Grid
                 item
@@ -58,7 +61,7 @@ const Controller = props => {
                 md={fullScreen.includes("stocks") ? 12 : 6}
                 lg={fullScreen.includes("stocks") ? 12 : 6}
             >
-                <Stocks getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} />
+                <Stocks getInfo={apiPost} sizeChange={{ increaseSize, decreaseSize, fullScreen }} screenSize={screenSize} />
             </Grid>
             <Grid
                 item
