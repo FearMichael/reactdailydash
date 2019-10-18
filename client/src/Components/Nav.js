@@ -62,7 +62,7 @@ const Nav = (props) => {
   const uploadPicture = () => {
     axios.post("/api/imageupload", file)
       .then(uploadData => {
-        firebaseAuth.addProfilePic(uploadData.data).then().catch(err => console.log("Error add profile picture to database", err))
+        firebaseAuth.addProfilePic(uploadData.data).then(data => data && updateUpload(false)).catch(err => console.log("Error add profile picture to database", err))
       })
       .catch(err => console.log(err))
   }
