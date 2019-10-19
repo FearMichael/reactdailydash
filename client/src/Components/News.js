@@ -39,7 +39,7 @@ const News = props => {
 
     const [search, updateSearch] = useState("");
 
-    const [news, updateNews] = useState();
+    const [news, updateNews] = useState(null);
 
     const [newsToShow, updateNewsToShow] = useState(3);
 
@@ -47,6 +47,14 @@ const News = props => {
 
     const showMore = () => {
         news.length > newsToShow ? updateNewsToShow(newsToShow + 3) : updateNewsToShow(news.length);
+    };
+
+    const showLess = () => {
+        updateNewsToShow(3);
+    };
+
+    const hideNews = () => {
+        updateNews(null)
     };
 
     const handleChange = (event) => {
@@ -131,7 +139,10 @@ const News = props => {
                 {news &&
                     <Box display="flex" justifyContent="center">
                         <Button size="small" onClick={showMore}>Show More</Button>
+                        <Button size="small" onClick={showLess}>Show Less</Button>
+                        <Button size="small" onClick={hideNews}>Hide</Button>
                     </Box>
+
                 }
 
             </CardContent>

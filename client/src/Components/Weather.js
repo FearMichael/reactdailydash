@@ -111,9 +111,9 @@ const Weather = (props) => {
                     return (
                       <TableRow key={day.time}>
                         <TableCell>{moment(day.time, "X").format("MMMM Do")}</TableCell>
-                        <TableCell>{day.apparentTemperatureHigh}F</TableCell>
-                        <TableCell>{day.apparentTemperatureLow}F</TableCell>
-                        { props.rawScreenSize > 379 &&
+                        <TableCell>{Math.round(day.apparentTemperatureHigh)}F</TableCell>
+                        <TableCell>{Math.round(day.apparentTemperatureLow)}F</TableCell>
+                        {props.rawScreenSize > 379 &&
                           <TableCell>{day.summary}</TableCell>
                         }
                       </TableRow>
